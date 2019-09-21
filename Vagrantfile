@@ -33,9 +33,9 @@ Vagrant.configure("2") do |config|
     SHELL
   end
 
-  config.vm.define "rabbitmq" do |subconfig|
+  config.vm.define "broker" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "rabbitmq"
+    subconfig.vm.hostname = "broker"
     subconfig.vm.network "private_network", ip: "10.0.0.13"
     subconfig.vm.network "forwarded_port", guest: 5672, host: 5673
     subconfig.vm.network "forwarded_port", guest: 15672, host: 15673
