@@ -12,9 +12,7 @@ Vagrant.configure("2") do |config|
 
     subconfig.vm.network "private_network", ip: "10.10.0.3"
 
-    subconfig.vm.provision "shell", inline: <<-SHELL
-      echo 'language setup'
-    SHELL
+    subconfig.vm.provision "shell", path: "dmz/provision-dmz.sh"
   end
 
 
@@ -22,12 +20,10 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "web"
 
-    subconfig.vm.network "forwarded_port", guest: 80, host: 8080
     subconfig.vm.network "private_network", ip: "11.11.0.3"
+    subconfig.vm.network "forwarded_port", guest: 80, host: 8080
 
-    subconfig.vm.provision "shell", inline: <<-SHELL
-      apt update && apt install -y nginx
-    SHELL
+    subconfig.vm.provision "shell", path: "web/provision-web.sh"
   end
 
 
@@ -35,12 +31,10 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "db"
 
-    subconfig.vm.network "forwarded_port", guest: 3306, host: 3307
     subconfig.vm.network "private_network", ip: "12.12.0.3"
+    subconfig.vm.network "forwarded_port", guest: 3306, host: 3307
 
-    subconfig.vm.provision "shell", inline: <<-SHELL
-      echo 'mysql setup here'
-    SHELL
+    subconfig.vm.provision "shell", path: "db/provision-db.sh"
   end
 
 
@@ -48,15 +42,13 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "broker"
 
-    subconfig.vm.network "forwarded_port", guest: 5672, host: 5673
-    subconfig.vm.network "forwarded_port", guest: 15672, host: 15673
     subconfig.vm.network "private_network", ip: "10.10.0.2"
     subconfig.vm.network "private_network", ip: "11.11.0.2"
     subconfig.vm.network "private_network", ip: "12.12.0.2"
+    subconfig.vm.network "forwarded_port", guest: 5672, host: 5673
+    subconfig.vm.network "forwarded_port", guest: 15672, host: 15673
 
-    subconfig.vm.provision "shell", inline: <<-SHELL
-      apt update && apt install -y rabbitmq-server
-    SHELL
+    subconfig.vm.provision "shell", path: "broker/provision-broker.sh"
   end
 
 end
