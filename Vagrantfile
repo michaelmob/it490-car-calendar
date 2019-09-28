@@ -48,7 +48,14 @@ Vagrant.configure("2") do |config|
     subconfig.vm.network "forwarded_port", guest: 5672, host: 5673
     subconfig.vm.network "forwarded_port", guest: 15672, host: 15673
 
-    subconfig.vm.provision "shell", path: "broker/provision-broker.sh"
+    subconfig.vm.provision "shell", path: "broker/provision-broker.sh", env: {
+      RABBITMQ_WEB_USER: "${RABBITMQ_WEB_USER:-web}",
+      RABBITMQ_WEB_PASS: "${RABBITMQ_WEB_PASS:-webpass}",
+      RABBITMQ_DMZ_USER: "${RABBITMQ_DMZ_USER:-dmz}",
+      RABBITMQ_DMZ_PASS: "${RABBITMQ_DMZ_PASS:-dmzpass}",
+      RABBITMQ_ADMIN_USER: "${RABBITMQ_ADMIN_USER:-admin}",
+      RABBITMQ_ADMIN_PASS: "${RABBITMQ_ADMIN_PASS:-adminpass}",
+    }
   end
 
 end
