@@ -9,9 +9,7 @@ Vagrant.configure("2") do |config|
   config.vm.define "dmz" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "dmz"
-
     subconfig.vm.network "private_network", ip: "10.10.0.3"
-
     subconfig.vm.provision "shell", path: "dmz/provision-dmz.sh"
   end
 
@@ -19,10 +17,13 @@ Vagrant.configure("2") do |config|
   config.vm.define "web" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "web"
-
     subconfig.vm.network "private_network", ip: "11.11.0.3"
     subconfig.vm.network "forwarded_port", guest: 80, host: 8080
+    subconfig.vm.synced_folder "web/src/", "/var/www/car-calendar"
 
+    subconfig.vm.provision "file",
+      source: "web/nginx.conf",
+      destination: "/tmp/nginx.conf"
     subconfig.vm.provision "shell", path: "web/provision-web.sh"
   end
 
@@ -30,7 +31,6 @@ Vagrant.configure("2") do |config|
   config.vm.define "db" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "db"
-
     subconfig.vm.network "private_network", ip: "12.12.0.3"
     subconfig.vm.network "forwarded_port", guest: 3306, host: 3307
 
@@ -41,7 +41,6 @@ Vagrant.configure("2") do |config|
   config.vm.define "broker" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "broker"
-
     subconfig.vm.network "private_network", ip: "10.10.0.2"
     subconfig.vm.network "private_network", ip: "11.11.0.2"
     subconfig.vm.network "private_network", ip: "12.12.0.2"
