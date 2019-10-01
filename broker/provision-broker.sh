@@ -29,8 +29,8 @@ rabbitmqctl set_permissions -p / $RABBITMQ_ADMIN_USER ".*" ".*" ".*"
 rabbitmqctl add_user $RABBITMQ_WEB_USER $RABBITMQ_WEB_PASS
 rabbitmqctl add_user $RABBITMQ_DMZ_USER $RABBITMQ_DMZ_PASS
 rabbitmqctl add_user $RABBITMQ_LOG_USER $RABBITMQ_LOG_PASS
-rabbitmqctl set_permissions -p / $RABBITMQ_WEB_USER "^web-.*" ".*" ".*"
-rabbitmqctl set_permissions -p / $RABBITMQ_DMZ_USER "^dmz-.*" "^dmz-.*" "^dmz-.*"
+rabbitmqctl set_permissions -p / $RABBITMQ_WEB_USER ".*" ".*" ".*"
+rabbitmqctl set_permissions -p / $RABBITMQ_DMZ_USER ".*" ".*" ".*"
 rabbitmqctl set_permissions -p / $RABBITMQ_LOG_USER "^log-.*" "^log-.*" "^log-.*"
 
 # Enable rabbitmq web interface

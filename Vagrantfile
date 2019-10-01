@@ -32,10 +32,14 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "db"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
-    subconfig.vm.network "forwarded_port", guest: 3306, host: 3306
+    subconfig.vm.network "forwarded_port", guest: 3306, host: 3307
     subconfig.vm.network "forwarded_port", guest: 80, host: 3380
+    subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
+    subconfig.vm.synced_folder "db/log-consumer/", "/srv/log-consumer"
 
     subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
+      RABBITMQ_LOG_USER: "${RABBITMQ_LOG_USER:-log}",
+      RABBITMQ_LOG_PASS: "${RABBITMQ_LOG_PASS:-logpass}",
       MYSQL_DB: "${MYSQL_DB:-car_calendar}",
       MYSQL_USER: "${MYSQL_USER:-car}",
       MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
