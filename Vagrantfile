@@ -33,8 +33,13 @@ Vagrant.configure("2") do |config|
     subconfig.vm.hostname = "db"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
     subconfig.vm.network "forwarded_port", guest: 3306, host: 3307
+    subconfig.vm.network "forwarded_port", guest: 80, host: 3380
 
-    subconfig.vm.provision "shell", path: "db/provision-db.sh"
+    subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
+      MYSQL_DB: "${MYSQL_DB:-car_calendar}",
+      MYSQL_USER: "${MYSQL_USER:-car}",
+      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
+    }
   end
 
 
