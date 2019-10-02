@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.network "forwarded_port", guest: 3306, host: 3307
     subconfig.vm.network "forwarded_port", guest: 80, host: 3380
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
-    subconfig.vm.synced_folder "db/log-consumer/", "/srv/log-consumer"
+    subconfig.vm.synced_folder "db/consumers/", "/srv/consumers"
 
     subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
       RABBITMQ_LOG_USER: "${RABBITMQ_LOG_USER:-log}",

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import unittest
-from log_consumer import Logger
+from logger import Logger
 from datetime import date
 
 test_type = 'TEST'
