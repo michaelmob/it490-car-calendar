@@ -1,5 +1,5 @@
 import requests
-vin = "vin=1GNALDEK9FZ108495"
+#vin = "vin=1GNALDEK9FZ108495"
 mileage = "mileage=50000"
 year = "year=2002"
 make = "make=Ford"
