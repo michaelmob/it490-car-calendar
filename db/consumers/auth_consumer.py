@@ -3,6 +3,7 @@ import os
 import json
 from consumer import Consumer, Producer
 from pika import BasicProperties
+import mysql.connector
 
 
 
@@ -38,12 +39,16 @@ class AuthConsumer:
         if props.reply_to:
             return
 
-        self.authenticate(json.loads(body))
+        response = None
+        try:
+            response = self.authenticate(json.loads(body))
+        except ValueError:
+            return
 
         ch.basic_publish(exchange='',
              routing_key=props.reply_to,
              properties=BasicProperties(correlation_id=props.correlation_id),
-             body=str('test'))
+             body=str(json.dumps(response)))
 
 
     def log_login_attempt(self, username, success):
@@ -57,7 +62,7 @@ class AuthConsumer:
         """
         Attempt to authenticate from the database.
         """
-        pass
+        return True
 
 
 
