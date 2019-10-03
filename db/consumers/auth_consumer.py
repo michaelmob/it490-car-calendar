@@ -24,9 +24,10 @@ class AuthConsumer:
 
     def consume(self, auth_queue, log_queue):
         """
-
+        Consume auth queue.
         """
         self.auth_queue = auth_queue
+        self.log_queue = log_queue
         self.consumer.consume(auth_queue, self.callback)
 
 
@@ -49,7 +50,7 @@ class AuthConsumer:
         """
         Log the attempted login.
         """
-        self.producer.produce('log msg', log_queue)
+        self.producer.produce('log msg', self.log_queue)
 
 
     def authenticate(self, data):
