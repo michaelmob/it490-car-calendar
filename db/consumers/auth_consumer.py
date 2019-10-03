@@ -60,6 +60,7 @@ class AuthConsumer:
         pass
 
 
+
 if __name__ == '__main__':
     # Config
     host = str(os.getenv('RABBITMQ_HOST'))
