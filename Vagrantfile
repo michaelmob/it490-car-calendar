@@ -24,7 +24,9 @@ Vagrant.configure("2") do |config|
     subconfig.vm.provision "file",
       source: "web/nginx.conf",
       destination: "/tmp/nginx.conf"
-    subconfig.vm.provision "shell", path: "web/provision-web.sh"
+    subconfig.vm.provision "shell", path: "web/provision-web.sh", env: {
+      DEBUG: "1",
+    }
   end
 
 
