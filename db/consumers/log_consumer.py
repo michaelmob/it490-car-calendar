@@ -4,9 +4,8 @@ from consumer import Consumer
 from logger import Logger
 
 
-if __name__ == '__main__':
+def main():
     # Config
-    # TODO: Use environment variables
     host = str(os.getenv('RABBITMQ_HOST'))
     port = int(os.getenv('RABBITMQ_PORT', 5672))
     queue = os.getenv('RABBITMQ_QUEUE', 'log-queue')
@@ -20,3 +19,7 @@ if __name__ == '__main__':
     # Run
     consumer = Consumer(host, port, '/', username, password)
     consumer.consume(queue, callback=callback)
+
+
+if __name__ == '__main__':
+    main()
