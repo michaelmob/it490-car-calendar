@@ -4,7 +4,7 @@ set -ex
 # Update package list and install python and amqp client
 apt-get update
 apt-get install -y nginx python3 python3-pip
-pip3 install pika flask gunicorn python-dotenv
+pip3 install -r /srv/car-calendar/requirements.txt
 
 sites_available_file='/etc/nginx/sites-available/car-calendar'
 sites_enabled_file='/etc/nginx/sites-enabled/car-calendar'

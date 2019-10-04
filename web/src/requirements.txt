@@ -1,0 +1,4 @@
+pika
+flask
+gunicorn
+python-dotenv
