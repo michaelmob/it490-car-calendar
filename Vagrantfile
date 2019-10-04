@@ -17,15 +17,16 @@ Vagrant.configure("2") do |config|
   config.vm.define "web" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "web"
-    subconfig.vm.network "private_network", ip: "11.11.0.3"
+    subconfig.vm.network "private_network", ip: "11.11.0.4"
+    subconfig.vm.network "forwarded_port", guest: 5000, host: 5000
     subconfig.vm.network "forwarded_port", guest: 80, host: 8080
-    subconfig.vm.synced_folder "web/src/", "/var/www/car-calendar"
+    subconfig.vm.synced_folder "web/src/", "/srv/car-calendar"
 
     subconfig.vm.provision "file",
       source: "web/nginx.conf",
       destination: "/tmp/nginx.conf"
     subconfig.vm.provision "shell", path: "web/provision-web.sh", env: {
-      DEBUG: "1",
+
     }
   end
 

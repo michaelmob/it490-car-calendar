@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -ex
 
-# update package list and install php along with php-amqplib dependencies
+# Update package list and install python and amqp client
 apt-get update
-apt-get install -y nginx php7.2-fpm php7.2-bcmath composer
+apt-get install -y nginx python3 python3-pip
+pip3 install pika flask gunicorn python-dotenv
 
 sites_available_file='/etc/nginx/sites-available/car-calendar'
 sites_enabled_file='/etc/nginx/sites-enabled/car-calendar'
@@ -16,11 +17,4 @@ mv '/tmp/nginx.conf' "$sites_available_file"
 ln -s "$sites_available_file" "$sites_enabled_file"
 
 # Restart nginx to reload configuration
-#systemctl restart nginx
 nginx -s reload
-
-# Enable PHP error displaying if debugging
-if [[ "$DEBUG" = "1" ]]; then
-  sed -i 's/^display_errors \= Off/display_errors \= On/g' /etc/php/7.2/fpm/php.ini
-  systemctl restart php7.2-fpm.service
-fi
