@@ -2,6 +2,7 @@ from uuid import uuid4
 from hashlib import sha1, sha256
 from database.db import db, conn
 from MySQLdb._exceptions import IntegrityError
+from .user import User
 
 
 class Auth:
@@ -36,10 +37,9 @@ class Auth:
         salt = sha1(encode(uuid4().urn)).hexdigest()
         password = sha256(encode(password) + encode(salt)).hexdigest()
 
-        # TODO: Check to see if token isn't taken, otherwise, on
-        # register a user may be told that an account already exists
-        # with their username/email but its the token thats already
-        # taken.
+        # TODO: Check to see if token isn't taken, otherwise, on register a
+        # user may be told that an account already exists with their
+        # username/email but its the token thats already taken.
 
         # Build and execute new user query
         query = """
@@ -58,3 +58,28 @@ class Auth:
         # Constraint should stop non-unique usernames or emails.
         except IntegrityError:
             return message('A user already exists with that username or email.', False)
+
+
+
+    @staticmethod
+    def login(username_or_email, password):
+        """
+        Attempt to log a user in.
+        Returns an API token.
+        """
+        user = User.get_by_username_or_email(
+            username_or_email, 'password,salt,token'
+        )
+
+        # Get hashed password if user exists
+        if user:
+            hashed_password = sha256(
+                str(password + user['salt']).encode('utf-8')).hexdigest()
+
+        # But if user doesn't exist (we won't need the hashed_password), or the
+        # users password isnt a match... deny them
+        if not user or (user and user.get('password') != hashed_password):
+            return { 'message': 'User does not exist.', 'success': False }
+
+        # Return auth token
+        return user.get('token')
