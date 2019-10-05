@@ -6,5 +6,6 @@ export RABBITMQ_PASS=
 
 export MYSQL_HOST=
 export MYSQL_PORT=3306
+export MYSQL_DB=
 export MYSQL_USER=
 export MYSQL_PASS=
