@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-source .env_log
-exec python3 log_consumer.py

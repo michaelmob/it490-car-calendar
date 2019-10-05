@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import unittest
 from logger import Logger
 from datetime import date
