@@ -4,6 +4,7 @@ import os.path
 from datetime import datetime, date
 
 
+
 class Logger:
     """
     Logging system.
