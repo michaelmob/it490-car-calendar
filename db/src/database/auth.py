@@ -30,16 +30,11 @@ class Auth:
         if not password:
             return message('Password cannot be empty.')
 
-
         # Generate random salt and token
         encode = lambda x: x.encode('utf-8')
-        token = sha1(encode(uuid4().urn)).hexdigest()
         salt = sha1(encode(uuid4().urn)).hexdigest()
         password = sha256(encode(password) + encode(salt)).hexdigest()
-
-        # TODO: Check to see if token isn't taken, otherwise, on register a
-        # user may be told that an account already exists with their
-        # username/email but its the token thats already taken.
+        token = User.generate_token()
 
         # Build and execute new user query
         query = """
@@ -58,7 +53,6 @@ class Auth:
         # Constraint should stop non-unique usernames or emails.
         except IntegrityError:
             return message('A user already exists with that username or email.', False)
-
 
 
     @staticmethod
