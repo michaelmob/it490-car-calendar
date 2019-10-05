@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
 import pika
 import uuid
-from pika import BasicProperties
-from . import Consumer
+
 
 
 class Producer:
@@ -10,7 +8,7 @@ class Producer:
     Queue producer.
     """
 
-    def __init__(self, host, port, vhost, username, password, is_rpc=True):
+    def __init__(self, host, port, vhost, username, password, is_rpc=False):
         """
         Initialize Producer instance.
         """
@@ -22,7 +20,7 @@ class Producer:
         self.connection = pika.BlockingConnection(params)
         self.channel = self.connection.channel()
 
-        if is_rpc:
+        if self.is_rpc:
             # Create a callback queue
             result = self.channel.queue_declare(queue='', exclusive=True)
             self.callback_queue = result.method.queue
@@ -35,11 +33,13 @@ class Producer:
             )
 
 
-    def produce(self, value, queue):
+    def produce(self, queue, value):
         """
         Send a value and wait for a response.
         """
         self.response = None
+
+        # Add tracking info to the value thats about to be published if RPC
         props = None
         if self.is_rpc:
             self.corr_id = str(uuid.uuid4())
@@ -47,6 +47,7 @@ class Producer:
                 reply_to=self.callback_queue, correlation_id=self.corr_id
             )
 
+        # Publish value to exchange
         self.channel.basic_publish(
             exchange='',
             routing_key=queue,
@@ -54,8 +55,8 @@ class Producer:
             body=str(value)
         )
 
+        # Wait for response if RPC.
         if self.is_rpc:
-            # Wait for response.
             while self.response is None:
                 self.connection.process_data_events()
 

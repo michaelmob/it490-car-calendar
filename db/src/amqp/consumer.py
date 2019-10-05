@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import pika
 
 
@@ -26,12 +25,12 @@ class Consumer:
         self.extra_callback = callback
         self.channel.queue_declare(queue=queue)
         self.channel.basic_qos(prefetch_count=1)
-        self.channel.basic_consume(queue=queue, on_message_callback=self.consume_callback)
+        self.channel.basic_consume(queue, on_message_callback=self.callback)
         print(self.init_message or '[*] Waiting for messages. To exit press CTRL+C')
         self.channel.start_consuming()
 
 
-    def consume_callback(self, ch, method, props, body):
+    def callback(self, ch, method, props, body):
         """
         Called on consume.
         """
