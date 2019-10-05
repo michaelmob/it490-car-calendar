@@ -22,9 +22,9 @@ def main():
     auth_consumer = AuthConsumer(
         host=os.getenv('RABBITMQ_HOST'),
         port=int(os.getenv('RABBITMQ_PORT', 5672)),
-        vhost=os.getenv('RABBITMQ_VHOST', '/'),
-        username=os.getenv('RABBITMQ_USER', 'auth'),
-        password=os.getenv('RABBITMQ_PASS', 'authpass')
+        vhost=os.getenv('RABBITMQ_VHOST'),
+        username=os.getenv('RABBITMQ_USER'),
+        password=os.getenv('RABBITMQ_PASS')
     )
 
     auth_consumer.consume(
