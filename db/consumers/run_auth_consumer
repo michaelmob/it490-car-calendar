@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-source .env_auth
-exec python3 auth_consumer.py
