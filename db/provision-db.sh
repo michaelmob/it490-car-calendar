@@ -17,13 +17,9 @@ mysql -u root <<EOF
 EOF
 
 # Install db adminer
-apt-get install -y apache2 php php-mysql mysql-client
+apt-get install -y apache2 php php-mysql mysql-client libmysqlclient-dev
 wget 'http://www.adminer.org/latest.php' -O /var/www/html/adminer.php
 
-# Install dependencies for consuming from rabbitmq
-apt-get install -y python3 python3-pip
-pip3 install pika
-
-# Install MySQL connector
-apt-get install libmysqlclient-dev
-pip3 install mysqlclient
+# Install python and pip and requirements
+apt-get install -y python3 python3-pip 
+pip3 install -r /srv/car-calendar/requirements.txt
