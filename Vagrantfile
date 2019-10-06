@@ -38,6 +38,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.network "forwarded_port", guest: 80, host: 3380
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
     subconfig.vm.synced_folder "db/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "db/logs/", "/var/logs/car-calendar"
 
     subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
       MYSQL_DB: "${MYSQL_DB:-car_calendar}",
