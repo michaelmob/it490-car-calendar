@@ -18,3 +18,6 @@ ln -s "$sites_available_file" "$sites_enabled_file"
 
 # Restart nginx to reload configuration
 nginx -s reload
+
+# Link webserver run script to home directory of vagrant
+ln -s /srv/car-calendar/run_webserver /home/vagrant/
