@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 import os
+from dotenv import load_dotenv  # Load environment variables from env file first
+load_dotenv(os.getenv('AUTH_ENV', '.env_auth'))
+
 import json
 from amqp.consumer import Consumer  # pylint: disable=import-error
 from database.auth import Auth  # pylint: disable=import-error
-from dotenv import load_dotenv
 
 
 def callback(ch, method, props, body):
@@ -48,8 +50,6 @@ def main():
     """
     Start auth consumer.
     """
-    load_dotenv(os.getenv('AUTH_ENV', '.env_auth'))  # Load .env file
-
     # Start consuming
     auth_consumer = Consumer(
         host=os.getenv('RABBITMQ_HOST'),
