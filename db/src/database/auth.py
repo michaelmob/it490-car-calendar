@@ -61,6 +61,9 @@ class Auth:
         Attempt to log a user in.
         Returns an API token.
         """
+        if not (username_or_email and password):
+            return
+
         user = User.get_by_username_or_email(
             username_or_email, 'password,salt,token'
         )
@@ -76,4 +79,8 @@ class Auth:
             return { 'message': 'User does not exist.', 'success': False }
 
         # Return auth token
-        return user.get('token')
+        return {
+            'token': user.get('token'),
+            'message': 'Logged in!',
+            'success': True
+        }

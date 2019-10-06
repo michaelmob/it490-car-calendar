@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import os
-from consumer import Consumer
+from amqp.consumer import Consumer
 from logger import Logger
 
 
@@ -16,9 +16,9 @@ def callback(ch, method, properties, body):
 consumer = Consumer(
     host=str(os.getenv('RABBITMQ_HOST')),
     port=int(os.getenv('RABBITMQ_PORT', 5672)),
-    vhost='/',
-    username=os.getenv('RABBITMQ_USER', 'log'),
-    password=os.getenv('RABBITMQ_PASS', 'logpass')
+    vhost=os.getenv('RABBITMQ_VHOST', '/'),
+    username=os.getenv('RABBITMQ_USER'),
+    password=os.getenv('RABBITMQ_PASS')
 )
 
 consumer.consume(
