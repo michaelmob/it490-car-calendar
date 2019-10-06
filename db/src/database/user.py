@@ -9,13 +9,15 @@ class User:
     User class.
     """
 
-
     @staticmethod
     def get_by_username_or_email(username_or_email, fields='*'):
         """
         Fetch user by its username or email address.
         Returns user dict or None.
         """
+        if not username_or_email:
+            return
+
         field = 'username'
         if "@" in username_or_email:
             field = 'email'
@@ -31,6 +33,9 @@ class User:
         Fetch user by its token.
         Returns user dict or None.
         """
+        if not token:
+            return
+
         query = "SELECT {} FROM `users` WHERE token=%s LIMIT 1".format(fields)
         db.execute(query, (token,))
         return db.fetchone()
@@ -42,6 +47,9 @@ class User:
         Test if token is already taken.
         Returns true if token is taken.
         """
+        if not token:
+            return
+
         query = "SELECT EXISTS(SELECT 1 FROM `users` WHERE token=%s) AS taken;"
         db.execute(query, (token,))
         return db.fetchone().get('taken') == 1
