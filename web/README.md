@@ -16,7 +16,8 @@ vagrant ssh web
 
 3. Run flask development server.
 ```bash
-~/run_webserver
+cd /srv/car-calendar
+./run_webserver
 ```
 
 ## REST (Unfinished)
