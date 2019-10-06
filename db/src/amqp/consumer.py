@@ -1,3 +1,4 @@
+import json
 import pika
 
 
@@ -26,7 +27,6 @@ class Consumer:
         self.channel.queue_declare(queue=queue)
         self.channel.basic_qos(prefetch_count=1)
         self.channel.basic_consume(queue, on_message_callback=self.callback)
-        print(self.init_message or '[*] Waiting for messages. To exit press CTRL+C')
         self.channel.start_consuming()
 
 
@@ -34,8 +34,31 @@ class Consumer:
         """
         Called on consume.
         """
-        if callable(self.extra_callback):
+        print("-> Received %r" % body)
+
+        # If we have a property in props called 'reply_to' then its an RPC
+        if props and props.reply_to:
+            # Get response from callback defined by consume
+            response = None
+            if callable(self.extra_callback):
+                response = self.extra_callback(ch, method, props, body)
+
+            # Response cannot be nothing
+            if not response:
+                return
+
+            print("<- Sent %r" % response)
+
+            # Publish response to exchange
+            ch.basic_publish(
+                exchange='',
+                routing_key=props.reply_to,
+                properties=pika.BasicProperties(correlation_id=props.correlation_id),
+                body=str(json.dumps(response))
+            )
+
+        # No 'reply_to' property, so its just a hit-n-run
+        elif callable(self.extra_callback):
             self.extra_callback(ch, method, props, body)
 
-        print("[x] Received %r" % body)
         ch.basic_ack(delivery_tag=method.delivery_tag)
