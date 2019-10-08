@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -7,13 +7,34 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
+@app.route('/register', methods=['POST'])
+def get_register():
+    '''data = {
+        'example': 'This is how to pass a variable to a template.'
+    }
+    return render_template('login.html', **data)'''
+    email = request.form["email"]
+    username = request.form["username"]
+    password = request.form["password"]
+    return "%s<br>%s<br>%s"%(email, username, password) 
 
 @app.route('/login')
 def login():
-    data = {
+    return render_template('login.html')
+        
+@app.route('/login', methods=['POST'])
+def get_login():
+    '''data = {
         'example': 'This is how to pass a variable to a template.'
     }
-    return render_template('login.html', **data)
+    return render_template('login.html', **data)'''
+    username = request.form["username"]
+    password = request.form["password"]
+    return "%s<br>%s"%(username, password) 
 
 
 if __name__ == '__main__':
