@@ -2,7 +2,20 @@
 	<form action="register.php" method="post">
 		<center>Email<input type="email" name="email"></input><br></center>
 		<center>Username<input type="text" name="username"></input></center><br>
-		<center>Password<input type="password" name="password"></input></center><br>
-		<center>Confirm_Password<input type="password" name="confirm_password"></center></input>
-	</form> 
+		<center>Password<input type="password" name="password" id="password"></input></center><br>
+		<center>Confirm_Password<input type="password" name="confirm_password" id="confirm_password"></center></input>
+		<center><button type=submit onclick="return validate_input()">Register</button></center>
+	</form>
+	<script>
+		function validate_input() 
+		{
+  			var password = document.getElementById("password").value;;
+  			var confirm_password = document.getElementById("confirm_password").value;;
+  			if (password != confirm_password) 
+			{
+    				alert("Passwords Do Not Match");
+    				return false;
+    			}
+		}
+	</script>
 </html>
