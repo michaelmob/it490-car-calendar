@@ -10,5 +10,6 @@ mileage = "mileage=" + sys.argv[4]
 api_endpoint = "http://api.carmd.com/v3.0/maint?%s&%s&%s&%s" %(year, make, model, mileage)
 header = {"content-type":"application/json", "authorization":"Basic MGE2OTJlMWQtY2M5YS00OWMwLTlmYTItNzNjZGFjMjYyZjBm", "partner-token":"8205959faed74cbcb946419b79e80a87"}  
 request = requests.get(url = api_endpoint, headers = header)
-response = request.json()
-print(response)
+car_maint = request.json()
+for maint in car_maint['data']:
+	print("Mileage: %s\tMaintence: %s" %(maint['due_mileage'], maint['desc']))
