@@ -13,15 +13,16 @@ def register():
 
 @app.route('/register', methods=['POST'])
 def get_register():
-    '''data = {
-        'example': 'This is how to pass a variable to a template.'
+    data = {
+        'email' : request.form["email"],
+        'username' : request.form["username"],
+        'password' : password = request.form["password"]
     }
-    return render_template('login.html', **data)'''
-    email = request.form["email"]
-    username = request.form["username"]
-    password = request.form["password"]
-    logging("Registration Attempted: %s\n" %(username))
-    return "%s<br>%s<br>%s"%(email, username, password) 
+    #email = request.form["email"]
+    #username = request.form["username"]
+    #password = request.form["password"]
+    logging("Registration Attempted: %s\n" %(data['username']))
+    return "%s<br>%s<br>%s"%(data['email'], data['username'], data['password']) 
 
 @app.route('/login')
 def login():
@@ -29,14 +30,14 @@ def login():
         
 @app.route('/login', methods=['POST'])
 def get_login():
-    '''data = {
-        'example': 'This is how to pass a variable to a template.'
+    data = {
+        'username' : request.form["username"],
+        'password' : request.form["password"]
     }
-    return render_template('login.html', **data)'''
-    username = request.form["username"]
-    password = request.form["password"]
-    logging("Login Attempted: %s\n" %(username))
-    return "%s<br>%s"%(username, password) 
+    #username = request.form["username"]
+    #password = request.form["password"]
+    logging("Login Attempted: %s\n" %(data['username']))
+    return "%s<br>%s"%(data['username'], data['password']) 
 
 def logging(event):
     log_file = open("/srv/car-calendar/car-calendar-events.log", "a+")
