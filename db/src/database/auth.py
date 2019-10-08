@@ -64,9 +64,7 @@ class Auth:
         if not (username_or_email and password):
             return
 
-        user = User.get_by_username_or_email(
-            username_or_email, 'password,salt,token'
-        )
+        user = User.get_by_username_or_email(username_or_email)
 
         # Get hashed password if user exists
         if user:
@@ -78,9 +76,12 @@ class Auth:
         if not user or (user and user.get('password') != hashed_password):
             return { 'message': 'User does not exist.', 'success': False }
 
-        # Return auth token
+        # Return user data
         return {
-            'token': user.get('token'),
+            'user': {
+                key: user[key] for key in user
+                    if key in User.whitelist_fields
+            },
             'message': 'Logged in!',
             'success': True
         }
