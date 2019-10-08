@@ -55,20 +55,20 @@ auth_rpc = AuthRpcClient()
 print("<- Requesting")
 
 # Register
-response = auth_rpc.call({
-    'action': 'register',
-    'email': 'test@test.com',
-    'username': 'mike',
-    'password': 'password'
-})
+# response = auth_rpc.call({
+#     'action': 'register',
+#     'email': 'test@test.com',
+#     'username': 'mike',
+#     'password': 'password'
+# })
+#
+# print('-> Received')
+# print(json.loads(response))
 
-print('-> Received')
-print(json.loads(response))
-
-# Login
+# Login, get user token
 response = auth_rpc.call({
     'action': 'login',
-    'username': 'mike_REMOVE_THIS_TO_LOGIN',
+    'username': 'mike',
     'password': 'password'
 })
 

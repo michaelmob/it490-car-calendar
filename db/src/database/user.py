@@ -8,6 +8,9 @@ class User:
     """
     User class.
     """
+    whitelist_fields = (
+        'id', 'username', 'email', 'first_name', 'last_name', 'token'
+    )
 
     @staticmethod
     def get_by_username_or_email(username_or_email, fields='*'):
@@ -19,7 +22,7 @@ class User:
             return
 
         field = 'username'
-        if "@" in username_or_email:
+        if '@' in username_or_email:
             field = 'email'
 
         query = "SELECT {} FROM `users` WHERE {}=%s".format(fields, field)
