@@ -21,6 +21,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.network "forwarded_port", guest: 5000, host: 5000
     subconfig.vm.network "forwarded_port", guest: 80, host: 8080
     subconfig.vm.synced_folder "web/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
 
     subconfig.vm.provision "file",
       source: "web/nginx.conf",
