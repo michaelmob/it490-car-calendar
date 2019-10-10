@@ -4,7 +4,7 @@ from dotenv import load_dotenv  # Load environment variables from env file first
 load_dotenv(os.getenv('AUTH_ENV', '.env_auth'))
 
 import json
-from amqp.consumer import Consumer  # pylint: disable=import-error
+from consumer import Consumer  # pylint: disable=import-error
 from database.auth import Auth  # pylint: disable=import-error
 
 

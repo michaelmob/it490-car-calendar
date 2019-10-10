@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv  # Load environment variables from env file first
 load_dotenv(os.getenv('AUTH_ENV', '.env_log'))
 
-from amqp.consumer import Consumer
+from consumer import Consumer
 from logger import Logger
 
 

@@ -25,9 +25,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.provision "file",
       source: "web/nginx.conf",
       destination: "/tmp/nginx.conf"
-    subconfig.vm.provision "shell", path: "web/provision-web.sh", env: {
-
-    }
+    subconfig.vm.provision "shell", path: "web/provision-web.sh"
   end
 
 
@@ -39,11 +37,12 @@ Vagrant.configure("2") do |config|
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
     subconfig.vm.synced_folder "db/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "db/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
 
     subconfig.vm.provision "file", source: "db/motd", destination: "/tmp/motd"
     subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
       MYSQL_DB: "${MYSQL_DB:-car_calendar}",
-      MYSQL_USER: "${MYSQL_USER:-car}",
+      MYSQL_USER: "${MYSQL_USER:-db}",
       MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
     }
   end
