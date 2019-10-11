@@ -55,12 +55,12 @@ def main():
         host=os.getenv('RABBITMQ_HOST'),
         port=int(os.getenv('RABBITMQ_PORT', 5672)),
         vhost=os.getenv('RABBITMQ_VHOST', '/'),
-        username=os.getenv('RABBITMQ_USER'),
-        password=os.getenv('RABBITMQ_PASS')
+        username=os.getenv('RABBITMQ_AUTH_USER'),
+        password=os.getenv('RABBITMQ_AUTH_PASS')
     )
     print('[*] Waiting for auth messages. To exit press CTRL+C')
     auth_consumer.consume(
-        queue=os.getenv('RABBITMQ_QUEUE', 'auth-queue-rpc'),
+        queue=os.getenv('RABBITMQ_AUTH_QUEUE', 'auth-queue-rpc'),
         callback=callback
     )
 
