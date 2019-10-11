@@ -16,7 +16,10 @@ class Producer:
 
         # RabbitMQ Auth
         credentials = pika.PlainCredentials(username, password)
-        params = pika.ConnectionParameters(host, port, vhost, credentials)
+        params = pika.ConnectionParameters(
+            host, port, vhost, credentials,
+            socket_timeout=3, stack_timeout=3
+        )
         self.connection = pika.BlockingConnection(params)
         self.channel = self.connection.channel()
 
