@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
 
@@ -11,24 +11,15 @@
 <form method="post">
   <table>
     <tr>
-      <td>
-        <label>Username</label>
-      </td>
-      <td>
-        <input type="text" name="username" required>
-      </td>
-    <tr>
-      <td>
-        <label>Password</label>
-      </td>
-      <td>
-        <input type="password" name="password" required>
-      </td>
+      <td><label>Username</label></td>
+      <td><input type="text" name="username" required></td>
     </tr>
     <tr>
-      <td>
-        <input type="submit" value="Login" />
-      </td>
+      <td><label>Password</label></td>
+      <td><input type="password" name="password" required></td>
+    </tr>
+    <tr>
+      <td><input type="submit" value="Login" /></td>
     </tr>
   </table>
 </form>

@@ -21,3 +21,7 @@ nginx -s reload
 
 # Link webserver run script to home directory of vagrant
 ln -s /srv/car-calendar/run_webserver /home/vagrant/
+
+# Setup permissions on logs
+mkdir -p /var/log/car-calendar
+chown -R vagrant:syslog /var/log/car-calendar

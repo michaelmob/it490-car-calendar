@@ -1,11 +1,42 @@
-<html>
-	<form method="post">
-		<center><label for="email">Email</label></center>
-		<center><input name="email" id="email" required></center><br>
-		<center><label for="username">Username</label></center>
-		<center><input name="username" id="username" required></center><br>
-		<center><label for="password">Password</label></center>
-		<center><input type="password" name="password" id="password" required></center><br>
-		<center><input type="submit" value="Register"></center>
-	</form>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+{% if error %}
+  <p>{{ error }}</p>
+{% endif %}
+
+<form method="post">
+  <table>
+    <tr>
+      <td><label>Username</label></td>
+      <td><input type="text" name="username" required /></td>
+    </tr>
+    <tr>
+      <td><label>E-mail</label></td>
+      <td><input type="email" name="email" required /></td>
+    </tr>
+    <tr>
+      <td><label>First Name</label></td>
+      <td><input type="text" name="first_name" required /></td>
+    </tr>
+    <tr>
+      <td><label>Last Name</label></td>
+      <td><input type="text" name="last_name" required /></td>
+    </tr>
+    <tr>
+      <td><label>Password</label></td>
+      <td><input type="password" name="password" required /></td>
+    </tr>
+    <tr>
+      <td><label>Confirm Password</label></td>
+      <td><input type="password" name="confirm_password" required /></td>
+    </tr>
+    <tr>
+      <td><input type="submit" value="Register" /></td>
+    </tr>
+  </table>
+</form>
+{% endblock %}
