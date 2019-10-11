@@ -1,11 +1,36 @@
 #!/usr/bin/env python3
 import os
 from dotenv import load_dotenv  # Load environment variables from env file first
-load_dotenv(os.getenv('AUTH_ENV', '.env_auth'))
+load_dotenv(os.getenv('ENV_FILE', '.env_auth'))
 
+import sys
 import json
-from consumer import Consumer  # pylint: disable=import-error
-from database.auth import Auth  # pylint: disable=import-error
+from consumer import Consumer
+from producer import Producer
+from database.auth import Auth
+
+
+def produce_log(log_type, message):
+    """
+    Produce log to the log queue.
+    """
+    try:
+        producer = Producer(
+            host=os.getenv('RABBITMQ_HOST'),
+            port=os.getenv('RABBITMQ_PORT', 5672),
+            vhost=os.getenv('RABBITMQ_VHOST', '/'),
+            username=os.getenv('RABBITMQ_LOG_USER'),
+            password=os.getenv('RABBITMQ_LOG_PASS')
+        )
+    except Exception as e:
+        print(e)
+        return False
+
+    producer.produce(
+        os.getenv('RABBITMQ_LOG_QUEUE', 'log-queue'),
+        json.dumps({ 'type': log_type, 'message': message })
+    )
+    return True
 
 
 def callback(ch, method, props, body):
@@ -50,14 +75,23 @@ def main():
     """
     Start auth consumer.
     """
-    # Start consuming
-    auth_consumer = Consumer(
-        host=os.getenv('RABBITMQ_HOST'),
-        port=int(os.getenv('RABBITMQ_PORT', 5672)),
-        vhost=os.getenv('RABBITMQ_VHOST', '/'),
-        username=os.getenv('RABBITMQ_AUTH_USER'),
-        password=os.getenv('RABBITMQ_AUTH_PASS')
-    )
+    auth_consumer = None
+    try:
+        # Start consuming
+        auth_consumer = Consumer(
+            host=os.getenv('RABBITMQ_HOST'),
+            port=int(os.getenv('RABBITMQ_PORT', 5672)),
+            vhost=os.getenv('RABBITMQ_VHOST', '/'),
+            username=os.getenv('RABBITMQ_AUTH_USER'),
+            password=os.getenv('RABBITMQ_AUTH_PASS')
+        )
+    except Exception as e:
+        print(e)
+        args = ('AUTH_CONSUMER_ERROR', e)
+        logger.write_log(*args)
+        produce_log(*args)
+        sys.exit(1)
+
     print('[*] Waiting for auth messages. To exit press CTRL+C')
     auth_consumer.consume(
         queue=os.getenv('RABBITMQ_AUTH_QUEUE', 'auth-queue-rpc'),
