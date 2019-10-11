@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import os
 from dotenv import load_dotenv  # Load environment variables from env file first
-load_dotenv(os.getenv('LOG_ENV_FILE', '.env_log'))
+load_dotenv(os.getenv('ENV_FILE', '.env_log'))
 
 import sys
 import json
