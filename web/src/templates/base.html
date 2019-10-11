@@ -1,12 +1,12 @@
-<!doctype html>
+<!DOCTYPE html>
 <title>{% block title %}{% endblock %} - Car Calendar</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
 <nav>
   <h1>Car Calendar</h1>
   <ul>
-    <li><a href="{{ url_for('register') }}">Create An Account</a>
-	<li><a href="{{ url_for('login') }}">Login</a>
+    <li><a href="{{ url_for('auth.register') }}">Create An Account</a>
+    <li><a href="{{ url_for('auth.login') }}">Login</a>
   </ul>
 </nav>
 
@@ -16,7 +16,7 @@
   </header>
 
   {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
+  <div class="flash">{{ message }}</div>
   {% endfor %}
   {% block content %}{% endblock %}
 </section>
