@@ -5,10 +5,8 @@
 is required.
 
 1. Inside of the `db/` directory
-2. Copy/duplicate `_env_log` to `.env_log`
-3. Configure newly created `.env_log` file
-4. Copy/duplicate `_auth_log` to `.auth_log`
-5. Configure newly created `.auth_log` file
+2. Copy/duplicate `_env` to `.env`
+3. Configure newly created `.env` file
 
 **Notice how the `_` (underscore) is changed to a `.` (period).**
 These `.env` files can store sensitive data without being commited to version
