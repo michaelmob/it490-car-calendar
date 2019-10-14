@@ -10,3 +10,4 @@ pip install googleapiclient
 pip install httplib2
 pip install oauth2client
 pip install datetime
+pip install bs4
