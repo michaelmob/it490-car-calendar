@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Cars{% endblock %}
+
+{% block content %}
+<table>
+  <thead>
+    <th>Make</th>
+    <th>Model</th>
+    <th>Year</th>
+    <th>Mileage</th>
+  </thead>
+
+  <tbody>
+  {% for car in cars %}
+    {% include 'cars/car.html' %}
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

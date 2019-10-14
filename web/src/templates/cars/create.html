@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Car{% endblock %}
+
+{% block content %}
+
+{% if error %}
+  <p>{{ error }}</p>
+{% endif %}
+
+<form method="post">
+  <table>
+    <tr>
+      <td><label>Make</label></td>
+      <td><input type="text" name="make" required /></td>
+    </tr>
+    <tr>
+      <td><label>Model</label></td>
+      <td><input type="text" name="model" required /></td>
+    </tr>
+    <tr>
+      <td><label>Year</label></td>
+      <td><input type="number" name="year" required /></td>
+    </tr>
+    <tr>
+      <td><label>Mileage</label></td>
+      <td><input type="number" name="mileage" required /></td>
+    </tr>
+    <tr>
+      <td><input type="submit" value="Add Car" /></td>
+    </tr>
+  </table>
+</form>
+{% endblock %}
