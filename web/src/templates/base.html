@@ -7,10 +7,15 @@
   <ul>
     <li><a href="{{ url_for('auth.register') }}">Create An Account</a>
     <li><a href="{{ url_for('auth.login') }}">Login</a>
+    <li><a href="{{ url_for('cars.list_cars') }}">View Cars</a>
   </ul>
 </nav>
 
 <section class="content">
+  {% if user %}
+    Welcome back, {{ user.username }}!
+  {% endif %}
+
   <header>
     {% block header %}{% endblock %}
   </header>

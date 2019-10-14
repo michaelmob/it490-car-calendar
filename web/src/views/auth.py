@@ -1,6 +1,6 @@
 import json
 from producers import produce_auth
-from flask import Blueprint, request, render_template, url_for, redirect, flash
+from flask import Blueprint, request, render_template, url_for, redirect, flash, session
 
 blueprint = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -10,7 +10,7 @@ def register():
     """
     Display register template.
     """
-    return render_template('register.html')
+    return render_template('auth/register.html')
 
 
 @blueprint.route('/register', methods=['POST'])
@@ -49,7 +49,7 @@ def register_post():
         flash('You have registered. Please log in now.')
         return redirect(url_for('auth.login'))
 
-    return render_template('register.html', error=error)
+    return render_template('auth/register.html', error=error)
 
 
 @blueprint.route('/login')
@@ -57,7 +57,7 @@ def login():
     """
     Display login template.
     """
-    return render_template('login.html')
+    return render_template('auth/login.html')
 
 
 @blueprint.route('/login', methods=['POST'])
@@ -80,10 +80,11 @@ def login_post():
             'password': password
         })
 
-    if response and response['success'] == True:
-        flash('Welcome %s!', (username,))
+    if response and response['success'] == True and response['user']:
+        flash(f'Welcome {username}!')
+        session['token'] = response['user'].get('token')
         return redirect(url_for('general.index'))
     else:
         error = 'Invalid credentials.'
 
-    return render_template('login.html', error=error)
+    return render_template('auth/login.html', error=error)

@@ -6,6 +6,40 @@ from logger import Logger
 logger = Logger(os.getenv('LOG_PATH', '/var/log/car-calendar'))
 
 
+def ez_produce(name, queue, data, is_rpc=False):
+    """
+    Send data to queue.
+    """
+    name = name.upper()
+    try:
+        producer = Producer(
+            host=os.getenv('RABBITMQ_HOST'),
+            port=os.getenv('RABBITMQ_PORT', 5672),
+            vhost=os.getenv('RABBITMQ_VHOST', '/'),
+            username=os.getenv('RABBITMQ_%s_USER' % name),
+            password=os.getenv('RABBITMQ_%s_PASS' % name),
+            is_rpc=True
+        )
+    except Exception as e:
+        print(e)
+        logger.write_log('%s_CONSUMER_ERROR' % name, e)
+        return False
+
+    response = json.loads(producer.produce(
+        queue=os.getenv('RABBITMQ_%s_QUEUE' % name, queue),
+        value=json.dumps(data)
+    ))
+
+    # Sometimes, the first json.loads returns a string...
+    if isinstance(response, str):
+        response = json.loads(response)
+
+    if is_rpc:
+        return response
+
+    return True
+
+
 def produce_auth(data):
     """
     Auth producer helper function.
@@ -32,6 +66,14 @@ def produce_auth(data):
     # I'm so sorry, but the first loads returns a str insead of a
     # dict for some reason
     return json.loads(json.loads(response))
+
+
+def produce_data(data):
+    """
+    Data producer helper function.
+    """
+    response = ez_produce('DATA', 'data-queue-rpc', data, True)
+    return response
 
 
 def produce_log(log_type, message):
