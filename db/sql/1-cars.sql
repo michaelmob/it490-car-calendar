@@ -4,6 +4,7 @@ CREATE TABLE `cars` (
   `make` varchar(128) NOT NULL,
   `model` varchar(128) NOT NULL,
   `year` int(11) NOT NULL,
+  `mileage` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
