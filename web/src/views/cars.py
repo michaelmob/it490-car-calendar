@@ -21,7 +21,7 @@ def list_cars():
 
 
 @blueprint.route('/<int:id>')
-def list_car(id):
+def display_car(id):
     """
     Display individual car display template.
     """
@@ -35,6 +35,28 @@ def list_car(id):
     })
 
     return render_template('cars/display.html', car=response.get('car'))
+
+
+@blueprint.route('/<int:id>/delete', methods=['POST'])
+def delete_car(id):
+    """
+    Display individual car display template.
+    """
+    if not session.get('token'):
+        return 'Not authed.'
+
+    response = produce_data({
+        'action': 'delete_car',
+        'id': id,
+        'token': session.get('token')
+    })
+
+    if response and response['success'] == True:
+        flash('Your car has been deleted!')
+    else:
+        flash('Your car has NOT been deleted!')
+
+    return redirect(url_for('cars.list_cars'))
 
 
 @blueprint.route('/add')

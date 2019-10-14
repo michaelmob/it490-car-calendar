@@ -29,7 +29,7 @@ def callback(ch, method, props, body):
 
     action = data.get('action')
     token = data.get('token')
-    result = { 'success': False }
+    result = { 'success': True }
 
     # Received get_car
     if action == 'get_car':
@@ -49,8 +49,13 @@ def callback(ch, method, props, body):
             data.get('mileage')
         )
 
+    # Received delete_car request
+    elif action == 'delete_car':
+        Car.delete_car(token, data.get('id'))
+
     # Unknown action
     else:
+        result['success'] = False
         result['message'] = 'unknown_action'
 
     return json.dumps(result, default=default)

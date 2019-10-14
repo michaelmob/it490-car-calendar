@@ -13,8 +13,10 @@
 
   <tbody>
   {% for car in cars %}
-    {% include 'cars/car.html' %}
+    {% include 'cars/list_item.html' %}
   {% endfor %}
   </tbody>
 </table>
+
+<a href="{{ url_for('cars.add_car') }}">Add Car</a>
 {% endblock %}
