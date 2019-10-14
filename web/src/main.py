@@ -11,6 +11,15 @@ app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'SECRET')
 from views import general, auth
 app.register_blueprint(general.blueprint)
 app.register_blueprint(auth.blueprint)
+# Inject user into all templates
+from producers import get_user
+@app.context_processor
+def inject_user():
+    if session.get('token'):
+        user = get_user(session.get('token'))
+        if user:
+            return { 'user': user }
+    return {}
 
 if __name__ == '__main__':
     # Run Flask

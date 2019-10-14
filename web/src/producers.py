@@ -55,3 +55,10 @@ def produce_log(log_type, message):
         os.getenv('RABBITMQ_LOG_QUEUE', 'log-queue'),
         json.dumps(data)
     )
+
+
+def get_user(token: str):
+    """
+    Get user by token.
+    """
+    return produce_auth({ 'action': 'get_user', 'token': token })
