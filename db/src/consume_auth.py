@@ -1,8 +1,17 @@
 #!/usr/bin/env python3
 import os, sys, json
+from datetime import date, datetime
 from dotenv import load_dotenv; load_dotenv()
 from helpers import logger, ez_consume, ez_produce
-from database.auth import Auth
+from database.auth import Auth, User
+
+
+def default(value):
+    """
+    Convert date/times to strings. Fixes 'datetime not JSON serializable'.
+    """
+    if isinstance(value, date) or isinstance(value, datetime):
+        return value.isoformat()
 
 
 def callback(ch, method, props, body):
@@ -20,8 +29,15 @@ def callback(ch, method, props, body):
     action = data.get('action')
     result = { 'success': False }
 
+    # Received get_user attempt
+    if action == 'get_user':
+        if data.get('token'):
+            result = User.get_by_token(data.get('token'))
+        else:
+            result['message'] = 'INVALID_TOKEN'
+
     # Received login attempt
-    if action == 'login':
+    elif action == 'login':
         result = Auth.login(
             username_or_email=data.get('username') or data.get('email'),
             password=data.get('password')
@@ -38,9 +54,9 @@ def callback(ch, method, props, body):
         )
 
     else:
-        result['message'] = 'Unknown action.'
+        result['message'] = 'UNKNOWN_ACTION'
 
-    return json.dumps(result)
+    return json.dumps(result, default=default)
 
 
 if __name__ == '__main__':
