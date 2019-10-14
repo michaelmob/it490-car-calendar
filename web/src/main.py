@@ -4,13 +4,16 @@ from dotenv import load_dotenv
 load_dotenv(os.getenv('ENV_FILE', '.env'))
 
 # Create and Setup Flask Instance.
-from flask import Flask
+from flask import Flask, session
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'SECRET')
 
-from views import general, auth
+# Register blueprints
+from views import general, auth, cars
 app.register_blueprint(general.blueprint)
 app.register_blueprint(auth.blueprint)
+app.register_blueprint(cars.blueprint)
+
 # Inject user into all templates
 from producers import get_user
 @app.context_processor
