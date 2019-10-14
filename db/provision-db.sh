@@ -32,7 +32,7 @@ chown -R vagrant:syslog /var/log/car-calendar
 mv /tmp/motd /etc/motd
 
 # Create database tables
-for i in /vagrant/db/sql/*.sql; do
+for i in $(ls /vagrant/db/sql/*.sql | sort -g); do
   [ -f "$i" ] || break
   mysql -u root <<< $(sed "1i USE $MYSQL_DB;" "$i")
 done
