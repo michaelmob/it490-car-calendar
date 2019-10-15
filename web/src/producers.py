@@ -10,6 +10,9 @@ def ez_produce(name, queue, data, is_rpc=False):
     """
     Send data to queue.
     """
+    if not (name and queue and data):
+        return
+
     name = name.upper()
     try:
         producer = Producer(
@@ -20,15 +23,15 @@ def ez_produce(name, queue, data, is_rpc=False):
             password=os.getenv('RABBITMQ_%s_PASS' % name),
             is_rpc=True
         )
+
+        response = json.loads(producer.produce(
+            queue=os.getenv('RABBITMQ_%s_QUEUE' % name, queue),
+            value=json.dumps(data)
+        ))
     except Exception as e:
         print(e)
         logger.write_log('%s_CONSUMER_ERROR' % name, e)
         return False
-
-    response = json.loads(producer.produce(
-        queue=os.getenv('RABBITMQ_%s_QUEUE' % name, queue),
-        value=json.dumps(data)
-    ))
 
     # Sometimes, the first json.loads returns a string...
     if isinstance(response, str):
