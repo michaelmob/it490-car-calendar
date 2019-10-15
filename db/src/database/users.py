@@ -3,9 +3,11 @@ from uuid import uuid4
 from hashlib import sha1
 
 
+
 whitelist_fields = (
     'id', 'username', 'email', 'first_name', 'last_name', 'token'
 )
+
 
 def get_by_username_or_email(username_or_email: str, fields='*'):
     """
@@ -44,7 +46,7 @@ def token_to_user_id(token: str, fields='*'):
     return get_by_token(token, 'id')
 
 
-def is_token_taken(token):
+def is_token_taken(token: str):
     """
     Test if token is already taken.
     Returns true if token is taken.
