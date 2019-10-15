@@ -3,7 +3,8 @@ import os, sys, json
 from datetime import date, datetime
 from dotenv import load_dotenv; load_dotenv()
 from helpers import logger, ez_consume, ez_produce
-from database.auth import Auth, User
+from database.auth import Auth
+from database import users
 
 
 def default(value):
@@ -32,7 +33,7 @@ def callback(ch, method, props, body):
     # Received get_user attempt
     if action == 'get_user':
         if data.get('token'):
-            result = User.get_by_token(data.get('token'))
+            result = users.get_by_token(data.get('token'))
         else:
             result['message'] = 'INVALID_TOKEN'
 

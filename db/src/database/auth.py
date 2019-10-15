@@ -2,7 +2,7 @@ from uuid import uuid4
 from hashlib import sha1, sha256
 from database.db import db, conn
 from MySQLdb._exceptions import IntegrityError
-from .user import User
+from database import users
 
 
 class Auth:
@@ -34,7 +34,7 @@ class Auth:
         encode = lambda x: x.encode('utf-8')
         salt = sha1(encode(uuid4().urn)).hexdigest()
         password = sha256(encode(password) + encode(salt)).hexdigest()
-        token = User.generate_token()
+        token = users.generate_token()
 
         # Build and execute new user query
         query = """
@@ -64,7 +64,7 @@ class Auth:
         if not (username_or_email and password):
             return
 
-        user = User.get_by_username_or_email(username_or_email)
+        user = users.get_by_username_or_email(username_or_email)
 
         # Get hashed password if user exists
         if user:
