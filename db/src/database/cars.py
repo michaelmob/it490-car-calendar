@@ -1,6 +1,5 @@
 from database.db import db, conn
-from database.auth import Auth
-from database import users
+from database import auth, users
 from MySQLdb._exceptions import IntegrityError
 
 
@@ -16,14 +15,13 @@ def add_car(user_id: int, make: str, model: str, year: int, mileage: int):
         ) VALUES (%s, %s, %s, %s, %s);
     """
 
-    user = users.get_user_by_token(token)
-
-    if not user or not user.get('token'):
-        return message('User not found.')
+    user = users.get_by_id(user_id)
+    if not user:
+        return message('USER_NOT_FOUND')
 
     try:
         db.execute(query, (
-            make, model, year, mileage, user.get('id')
+            user_id, make, model, year, mileage
         ))
         conn.commit()
         return message('Car added!', True)
@@ -37,11 +35,11 @@ def get_cars(user_id: int):
     Get a list of user's cars by the user's token.
     """
     query = """
-        SELECT cars.* FROM users
-        INNER JOIN cars ON users.id=cars.user_id
-        WHERE users.token=%s
+        SELECT cars.* FROM `users`
+        INNER JOIN `cars` ON users.id=cars.user_id
+        WHERE users.id=%s
     """
-    db.execute(query, (token,))
+    db.execute(query, (user_id,))
     return db.fetchall()
 
 
@@ -52,9 +50,9 @@ def get_car(user_id: int, car_id: int):
     query = """
         SELECT cars.* FROM `users`
         INNER JOIN `cars` ON users.id=cars.user_id
-        WHERE users.token=%s AND cars.id=%s
+        WHERE users.id=%s AND cars.id=%s
     """
-    db.execute(query, (token, car_id))
+    db.execute(query, (user_id, car_id))
     return db.fetchone()
 
 
@@ -64,7 +62,8 @@ def delete_car(user_id: int, car_id: int):
     """
     query = """
         DELETE cars.* FROM `cars`
-        INNER JOIN users ON users.id=cars.user_id
-        WHERE users.token=%s AND cars.id=%s
+        INNER JOIN `users` ON users.id=cars.user_id
+        WHERE users.id=%s AND cars.id=%s
     """
-    db.execute(query, (token, car_id))
+    print(user_id, car_id)
+    db.execute(query, (user_id, car_id))

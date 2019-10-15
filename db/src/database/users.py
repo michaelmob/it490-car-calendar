@@ -39,11 +39,17 @@ def get_by_token(token: str, fields='*'):
     return db.fetchone()
 
 
-def token_to_user_id(token: str, fields='*'):
+def get_by_id(user_id: int, fields='*'):
     """
-    Retrieve users id from their token.
+    Fetch user by its id.
+    Returns user dict or None.
     """
-    return get_by_token(token, 'id')
+    if not user_id:
+        return
+
+    query = "SELECT {} FROM `users` WHERE id=%s LIMIT 1".format(fields)
+    db.execute(query, (user_id,))
+    return db.fetchone()
 
 
 def is_token_taken(token: str):

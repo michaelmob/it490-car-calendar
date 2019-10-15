@@ -68,7 +68,7 @@ def login(username_or_email, password):
     # But if user doesn't exist (we won't need the hashed_password), or the
     # users password isnt a match... deny them
     if not user or (user and user.get('password') != hashed_password):
-        return { 'message': 'USER_DOES_NOT_EXIST', 'success': False }
+        return { 'message': 'USER_NOT_FOUND', 'success': False }
 
     # Return user data
     return {

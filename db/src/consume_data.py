@@ -3,7 +3,7 @@ import os, sys, json
 from datetime import date, datetime
 from dotenv import load_dotenv; load_dotenv()
 from helpers import logger, ez_consume, ez_produce
-from database.cars import Car
+from database import users, cars
 
 
 def default(value):
@@ -24,25 +24,33 @@ def callback(ch, method, props, body):
         print('malformed')
         return  # Malformed JSON
 
+    # No data means no work to be done
     if not data:
         return
 
+    # Collect values
     action = data.get('action')
     token = data.get('token')
     result = { 'success': True }
+    user = users.get_by_token(token, 'id')
+    user_id = user.get('id')
+
+    if not isinstance(user_id, int):
+        print(user_id, type(user_id))
+        return
 
     # Received get_car
     if action == 'get_car':
-        result['car'] = Car.get_car(token, data.get('id'))
+        result['car'] = cars.get_car(user_id, data.get('id'))
 
     # Received get_cars
     elif action == 'get_cars':
-        result['cars'] = Car.get_cars(token)
+        result['cars'] = cars.get_cars(user_id)
 
     # Received create_car
     elif action == 'add_car':
-        result['cars'] = Car.add_car(
-            token,
+        result['cars'] = cars.add_car(
+            user_id,
             data.get('make'),
             data.get('model'),
             data.get('year'),
@@ -51,7 +59,7 @@ def callback(ch, method, props, body):
 
     # Received delete_car request
     elif action == 'delete_car':
-        Car.delete_car(token, data.get('id'))
+        cars.delete_car(user_id, data.get('id'))
 
     # Unknown action
     else:

@@ -3,7 +3,7 @@ import os, sys, json
 from datetime import date, datetime
 from dotenv import load_dotenv; load_dotenv()
 from helpers import logger, ez_consume, ez_produce
-from database.auth import Auth
+from database import auth
 from database import users
 
 
@@ -39,14 +39,14 @@ def callback(ch, method, props, body):
 
     # Received login attempt
     elif action == 'login':
-        result = Auth.login(
+        result = auth.login(
             username_or_email=data.get('username') or data.get('email'),
             password=data.get('password')
         )
 
     # Received registration attempt
     elif action == 'register':
-        result = Auth.register(
+        result = auth.register(
             username=data.get('username'),
             email=data.get('email'),
             password=data.get('password'),
