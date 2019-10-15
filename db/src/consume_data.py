@@ -21,7 +21,6 @@ def callback(ch, method, props, body):
     try:
         data = json.loads(body)
     except:
-        print('malformed')
         return  # Malformed JSON
 
     # No data means no work to be done
@@ -31,7 +30,7 @@ def callback(ch, method, props, body):
     # Collect values
     action = data.get('action')
     token = data.get('token')
-    result = { 'success': True }
+    result = { 'success': True, 'message': 'SUCCESS' }
     user = users.get_by_token(token, 'id')
     user_id = user.get('id')
 
@@ -64,7 +63,7 @@ def callback(ch, method, props, body):
     # Unknown action
     else:
         result['success'] = False
-        result['message'] = 'unknown_action'
+        result['message'] = 'UNKNOWN_ACTION'
 
     return json.dumps(result, default=default)
 

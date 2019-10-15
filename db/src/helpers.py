@@ -1,4 +1,4 @@
-import os
+import os, json
 from consumer import Consumer
 from producer import Producer
 from logger import Logger
@@ -62,3 +62,13 @@ def ez_consume(name, queue, callback):
         callback=callback
     )
     return True
+
+
+def produce_log(message_type, message):
+    """
+    Produce log to amqp broker and write to local log.
+    """
+    logger.write_log(message_type, message)
+
+    data = { 'message': message }
+    ez_produce(message_type, os.getenv('RABBITMQ_LOG_QUEUE', 'log-queue'), data)

@@ -9,6 +9,10 @@ def callback(ch, method, properties, body):
     Write 'body' contents to a log file.
     """
     data = json.loads(body)
+
+    if not isinstance(data, dict):
+        return
+
     logger.write_log(data.get('message_type', 'LOG'), str(body.get('message')))
 
 

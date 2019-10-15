@@ -3,6 +3,7 @@ from hashlib import sha1, sha256
 from database.db import db, conn
 from MySQLdb._exceptions import IntegrityError
 from database import users
+from helpers import logger, produce_log
 
 
 
@@ -47,6 +48,7 @@ def register(username, email, password, first_name, last_name):
 
     # Constraint should stop non-unique usernames or emails.
     except IntegrityError:
+        produce_log('AUTH_WARNING', 'User "%s" already exist' % username)
         return message('USER_EXISTS', False)
 
 
@@ -68,6 +70,7 @@ def login(username_or_email, password):
     # But if user doesn't exist (we won't need the hashed_password), or the
     # users password isnt a match... deny them
     if not user or (user and user.get('password') != hashed_password):
+        produce_log('AUTH_WARNING', 'Invalid login for "%s".' % username_or_email)
         return { 'message': 'USER_NOT_FOUND', 'success': False }
 
     # Return user data
