@@ -15,7 +15,7 @@ class Car:
         message = lambda m, s=False: { 'message': m, 'success': s }
         query = """
             INSERT INTO `cars` (
-                `make`, `model`, `year`, `mileage`, `user_id`
+                `user_id`,  `make`, `model`, `year`, `mileage`
             ) VALUES (%s,%s,%s,%s,%s);
         """
 
