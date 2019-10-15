@@ -17,7 +17,8 @@ def ez_produce(name, queue, data, is_rpc=False):
             port=os.getenv('RABBITMQ_PORT', 5672),
             vhost=os.getenv('RABBITMQ_VHOST', '/'),
             username=os.getenv('RABBITMQ_%s_USER' % name),
-            password=os.getenv('RABBITMQ_%s_PASS' % name)
+            password=os.getenv('RABBITMQ_%s_PASS' % name),
+            is_rpc=is_rpc
         )
     except Exception as e:
         print(e)

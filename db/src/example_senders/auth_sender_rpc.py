@@ -13,9 +13,9 @@ class AuthRpcClient(object):
     def __init__(self):
         host = str(os.getenv('RABBITMQ_HOST'))
         port = int(os.getenv('RABBITMQ_PORT', 5672))
-        queue = os.getenv('RABBITMQ_QUEUE')
-        username = os.getenv('RABBITMQ_USER')
-        password = os.getenv('RABBITMQ_PASS')
+        queue = os.getenv('RABBITMQ_AUTH_QUEUE', 'auth-queue-rpc')
+        username = os.getenv('RABBITMQ_AUTH_USER')
+        password = os.getenv('RABBITMQ_AUTH_PASS')
         credentials = pika.PlainCredentials(username, password)
         params = pika.ConnectionParameters(host, port, '/', credentials)
         self.connection = pika.BlockingConnection(params)
