@@ -40,6 +40,8 @@ done
 # Install services
 cp /vagrant/db/services/log-consumer.service /etc/systemd/system/
 cp /vagrant/db/services/auth-consumer.service /etc/systemd/system/
+cp /vagrant/db/services/data-consumer.service /etc/systemd/system/
 
 systemctl --now enable log-consumer.service
 systemctl --now enable auth-consumer.service
+systemctl --now enable data-consumer.service
