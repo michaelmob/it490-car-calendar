@@ -32,11 +32,12 @@ def callback(ch, method, props, body):
     token = data.get('token')
     result = { 'success': True, 'message': 'SUCCESS' }
     user = users.get_by_token(token, 'id')
-    user_id = user.get('id')
 
-    if not isinstance(user_id, int):
-        print(user_id, type(user_id))
-        return
+    if not isinstance(user, dict) and user.get('id'):
+        result['success'] = False
+        result['message'] = 'USER_NOT_FOUND'
+
+    user_id = user.get('id')
 
     # Received get_car
     if action == 'get_car':
