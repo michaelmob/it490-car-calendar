@@ -2,7 +2,7 @@
 import os, sys, json
 from datetime import date, datetime
 from dotenv import load_dotenv; load_dotenv()
-from helpers import logger, ez_consume, ez_produce
+from ez import ez_consume
 from database import users, cars
 
 

@@ -66,6 +66,9 @@ def produce_auth(data):
         json.dumps(data)
     )
 
+    if not response:
+        return
+
     # I'm so sorry, but the first loads returns a str insead of a
     # dict for some reason
     return json.loads(json.loads(response))

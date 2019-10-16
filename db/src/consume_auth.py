@@ -2,9 +2,8 @@
 import os, sys, json
 from datetime import date, datetime
 from dotenv import load_dotenv; load_dotenv()
-from helpers import logger, ez_consume, ez_produce
-from database import auth
-from database import users
+from ez import ez_consume
+from database import auth, users
 
 
 def default(value):
@@ -21,7 +20,7 @@ def callback(ch, method, props, body):
     """
     try:
         data = json.loads(body)
-    except:
+    except Exception as e:
         return  # Malformed JSON
 
     if not data:

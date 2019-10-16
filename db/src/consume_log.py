@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 import os, sys, json
 from dotenv import load_dotenv; load_dotenv()
-from helpers import logger, ez_consume
+from ez import logger, ez_consume
 
 
 def callback(ch, method, properties, body):
     """
     Write 'body' contents to a log file.
     """
-    data = json.loads(body)
+    try:
+        data = json.loads(body)
+    except Exception as e:
+        return  # Malformed JSON
 
     if not isinstance(data, dict):
         return
 
-    logger.write_log(data.get('message_type', 'LOG'), str(body.get('message')))
+    logger.write_log(data.get('message_type', 'LOG'), str(data.get('message')))
 
 
 if __name__ == '__main__':
