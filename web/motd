@@ -1,0 +1,11 @@
+################################################################################
+Run development server:
+-------------
+sudo systemctl stop gunicorn.service
+~/run_dev_server
+
+Check status of gunicorn:
+-------------
+systemctl status gunicorn.service
+
+################################################################################
