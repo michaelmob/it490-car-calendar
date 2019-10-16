@@ -43,7 +43,7 @@ Vagrant.configure("2") do |config|
 
     subconfig.vm.provision "file", source: "db/motd", destination: "/tmp/motd"
     subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
-      MYSQL_DB: "${MYSQL_DB:-car_calendar}",
+      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
       MYSQL_USER: "${MYSQL_USER:-db}",
       MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
     }
