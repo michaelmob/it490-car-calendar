@@ -24,10 +24,13 @@ def ez_produce(name, queue, data, is_rpc=False):
             password=os.getenv('RABBITMQ_%s_PASS' % name),
             is_rpc=is_rpc
         )
+
         response = json.loads(producer.produce(
             queue=os.getenv('RABBITMQ_%s_QUEUE' % name, queue),
             value=json.dumps(data)
         ))
+
+    # Couldn't connect to rabbitmq, most likely
     except AttributeError as e:
         message = 'Your .env file is probably not set up correctly.'
         print({
@@ -43,10 +46,12 @@ def ez_produce(name, queue, data, is_rpc=False):
         logger.write_log('%s_PRODUCER_ERROR' % name, message)
         return False
 
+    # Type errors happen when data cannot be serialized to JSON
     except TypeError as e:
         logger.write_log('%s_PRODUCER_ERROR' % name, e)
         return False
 
+    # Any other exception
     except Exception as e:
         if is_rpc:
             raise e
@@ -54,9 +59,7 @@ def ez_produce(name, queue, data, is_rpc=False):
             logger.write_log('%s_PRODUCER_ERROR' % name, e)
             return False
 
-    # Sometimes, the first json.loads returns a string...
-
-    if is_rpc:
+    if not is_rpc:
         return True
 
     if response:

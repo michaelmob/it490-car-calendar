@@ -23,6 +23,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.synced_folder "web/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
 
+    subconfig.vm.provision "file", source: "web/motd", destination: "/tmp/motd"
     subconfig.vm.provision "file",
       source: "web/nginx.conf",
       destination: "/tmp/nginx.conf"
