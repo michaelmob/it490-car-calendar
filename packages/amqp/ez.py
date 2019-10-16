@@ -10,7 +10,7 @@ def ez_produce(name, queue, data, is_rpc=False):
     """
     Send data to queue.
     """
-    if not (name and queue and data):
+    if not (name and queue and data and isinstance(data, dict)):
         return
 
     name = name.upper()
@@ -41,6 +41,12 @@ def ez_produce(name, queue, data, is_rpc=False):
             'RABBITMQ_%s_PASS': os.getenv('RABBITMQ_%s_PASS' % name),
         })
         logger.write_log('%s_PRODUCER_ERROR' % name, message)
+        return False
+
+    except TypeError as e:
+        logger.write_log('%s_PRODUCER_ERROR' % name, e)
+        return False
+
     except Exception as e:
         if is_rpc:
             raise e
@@ -49,10 +55,12 @@ def ez_produce(name, queue, data, is_rpc=False):
             return False
 
     # Sometimes, the first json.loads returns a string...
-    if isinstance(response, str):
-        response = json.loads(response)
 
-    return response if is_rpc else True
+    if is_rpc:
+        return True
+
+    if response:
+        return json.loads(response) if isinstance(response, str) else response
 
 
 def ez_consume(name, queue, callback):
