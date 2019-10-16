@@ -48,13 +48,18 @@ def callback(ch, method, props, body):
 
     # Received create_car
     elif action == 'add_car':
-        result['cars'] = cars.add_car(
-            user_id,
-            data.get('make'),
-            data.get('model'),
-            data.get('year'),
-            data.get('mileage')
-        )
+        try:
+            result['cars'] = cars.add_car(
+                user_id,
+                data.get('make'),
+                data.get('model'),
+                data.get('year'),
+                data.get('mileage')
+            )
+        except Exception as e:
+            result['success'] = False
+            result['message'] = 'CAR_ADD_ERROR'
+            result['exception'] = str(e)
 
     # Received delete_car request
     elif action == 'delete_car':
@@ -66,6 +71,7 @@ def callback(ch, method, props, body):
         result['message'] = 'UNKNOWN_ACTION'
 
     return json.dumps(result, default=default)
+
 
 
 if __name__ == '__main__':
