@@ -1,9 +1,94 @@
+<!DOCTYPE html>
 <html>
+<head>
+	<title>Login</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="gallery.css">
+</head>
+<body>
 	<form method="post">
-		<center><label for="username">Username</label></center>
-		<center><input name="username" id="username" required></center><br>
-		<center><label for="password">Password</label></center>
-		<center><input type="password" name="password" id="password" required></center><br>
+		<nav class="navbar navbar-inverse">
+		<div class="container">
+			<div class="navbar-header">
+					<!--Creating the hamburger hiding-->
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-nav-demo" aria-expanded="false">
+	        	<span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+	     	 	</button>
+			<a href="#" class="navbar-brand"><span class="glyphicon glyphicon-picture" aria-hidden="true"></span>Car_Services</a>
+		</div>
+			<!--Creating navbar left-->
+		<div class="collapse navbar-collapse" id="bs-nav-demo">
+
+			<ul class="nav navbar-nav">
+				<li><a href="#">About</a></li>
+				<li><a href="#">Contact</a></li>
+			</ul>
+			<!--Navbar right-->
+			<ul class="nav navbar-nav navbar-right">
+				<li><a href="#">Sign up</a></li>
+				<li><a href="#">Login</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<div class="jumbotron">
+			<h1><span class="glyphicon glyphicon-dashboard" aria-hidden="true"></span>Car Calendar Services</h1>
+			<P>We offer great Services</P>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4">
+				<div class="thumbnail">
+					<img src="https://cdn.shopify.com/s/files/1/0761/3599/products/Screen_Shot_2018-04-13_at_9.42.47_AM_1024x1024.png?v=1523626963">
+			</div>
+		</div>
+			<div class="col-lg-4">
+				<div class="thumbnail">
+					<img src="https://cdn.shopify.com/s/files/1/0761/3599/products/Screen_Shot_2018-04-13_at_9.42.47_AM_1024x1024.png?v=1523626963">
+			</div>
+		</div>
+			<div class="col-lg-4">
+				<div class="thumbnail">
+					<img src="https://cdn.shopify.com/s/files/1/0761/3599/products/Screen_Shot_2018-04-13_at_9.42.47_AM_1024x1024.png?v=1523626963">
+			</div>
+		</div>
+			<div class="col-lg-4">
+				<div class="thumbnail">
+					<img src="https://images.hgmsites.net/hug/2020-jeep-gladiator_100696661_h.jpg">
+			</div>
+		</div>
+			<div class="col-lg-4">
+				<div class="thumbnail">
+					<img src="https://images.hgmsites.net/hug/2020-jeep-gladiator_100696661_h.jpg">
+			</div>
+		</div>
+			<div class="col-lg-4">
+				<div class="thumbnail">
+					<img src="https://images.hgmsites.net/hug/2020-jeep-gladiator_100696661_h.jpg">
+			</div>
+		</div>
+	</div>
+		<div>
+			<center><label for="username">Username:</label></center>
+			<center><input type="text" name="username" id="username" required></center><br>
+		</div>
+		<div>
+			<center><label for="password">Password:</label></center>
+			<center><input type="password" name="password" id="password" required></center><br>
+		</div>
+
 		<center><input type="submit" value="Login"></center>
 	</form>
+	<script type="text/javascript" src="validation.js"></script>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+</body>
 </html>
+
+
+
+

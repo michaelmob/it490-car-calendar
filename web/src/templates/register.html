@@ -1,11 +1,33 @@
+
+<!DOCTYPE html>
 <html>
-	<form method="post">
-		<center><label for="email">Email</label></center>
-		<center><input name="email" id="email" required></center><br>
-		<center><label for="username">Username</label></center>
-		<center><input name="username" id="username" required></center><br>
-		<center><label for="password">Password</label></center>
-		<center><input type="password" name="password" id="password" required></center><br>
-		<center><input type="submit" value="Register"></center>
+<head>
+	<title>Registration Form</title>
+</head>
+<body>
+	<form method="post" action="/Register">
+		<div class="email">
+			<center><label for="email" class="required">Email:</label></center>
+			<center><input type="email" name="email" id="email" placeholder="you@example.com" required></center><br>
+		</div>
+		<div>
+			<center><label for="username">Username:</label></center>
+			<center><input type="text" name="username" id="username" required></center><br>
+		</div>
+		<div class="password">
+			<center><label for="password" class="required">Password:</label></center>
+			<center><input type="password" name="password" id="password" required></center><br>
+		</div>
+
+		<center><input type="submit" id="submit" value="Register"></center>
 	</form>
+	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+<script type="text/javascript" src="validation.js"></script>
+</body>
 </html>
+
+
+
+
+

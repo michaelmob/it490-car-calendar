@@ -27,7 +27,7 @@ def get_register():
     if not password:
         return 'Invalid password.'
 
-    producer = Producer('12.12.0.2', 5672, '/', 'admin', 'adminpass', is_rpc=True)
+    producer = Producer('192.168.1.11', 5672, '/', 'admin', 'adminpass', is_rpc=True)
     response = producer.produce('auth-queue-rpc', json.dumps({
         'action': 'register',
         'email': email,
@@ -35,8 +35,8 @@ def get_register():
         'password': password
     }))
 
-    logging("Registration Attempted: %s\n" % (username,))
-    return 'Registered!'
+    logging("Registration Attempted: %s\n (%s)" % (username, response))
+    return json.loads(response)
 
 
 @app.route('/login')
@@ -48,13 +48,13 @@ def login():
 def get_login():
     username = request.form["username"]
     password = request.form["password"]
-    producer = Producer('12.12.0.2', 5672, '/', 'admin', 'adminpass', is_rpc=True)
+    producer = Producer('192.168.1.11', 5672, '/', 'admin', 'adminpass', is_rpc=True)
     response = producer.produce('auth-queue-rpc', json.dumps({
         'action': 'login',
         'username': username,
         'password': password
     }))
-    logging("Login Attempted: %s\n" % (username,))
+    logging("Login Attempted: %s\n (%s)" % (username, response))
 
     return json.loads(response)
 
