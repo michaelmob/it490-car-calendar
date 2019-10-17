@@ -1,4 +1,3 @@
-import sys
 import requests
 import datetime
 from googleapiclient.discovery import build
@@ -9,37 +8,34 @@ from bs4 import BeautifulSoup
 from google_auth_oauthlib.flow import Flow
 event_log = "car_maintenance_event.log"
 date = datetime.date.today()
+weeks = []
 maint_events = []
+response = {}
 def event_logging(event):
-	#Writes to events to the event log file
+	#Writes events to the event log file
 	global event_log
 	file = open(event_log, "w+")
 	file.write(event)
 	file.close()
 def google_oauth2(secret_file, SCOPES):
 	#Returns user's oauth2 credentials to access their Google Calendar
-	flow = Flow.from_client_secrets_file(secret_file, scopes=SCOPES, redirect_uri = 'urn:ietf:wg:oauth:2.0:oob')
+	flow = Flow.from_client_secrets_file(secret_file, scopes=SCOPES, redirect_uri='urn:ietf:wg:oauth:2.0:oob')
 	auth_url, _ = flow.authorization_url(prompt='consent')
-	print('Authorization URL: {}'.format(auth_url))
+	print('Authorization URL:\n {}'.format(auth_url))
 	code = input("Authorization code: ")
 	flow.fetch_token(code=code)
 	return flow.credentials
-def get_date_for_day(date_format, day):
-	#Returns the date for the current week's Saturday
-	global date
+def get_dates_for_day(num_of_weeks, date_format, day):
+	#Populates the weeks list with the date for the specified day, for the current week and following number of weeks supplied in num_of_weeks argument
+	global date, weeks
 	day_of_week = date.strftime('%A')
 	while (day_of_week != day):
 		date += datetime.timedelta(days=1)
 		day_of_week = date.strftime('%A')
-	return date.strftime(date_format)
-def get_date_for_days(num_of_weeks, date_format):
-	#Returns the date for the Saturday for the following amount of weeks
-	global date
-	weeks = []
+	weeks.append(date.strftime(date_format))
 	for week in range(num_of_weeks):
-		weeks.append(get_date_for_day(date_format, day))
-		date += datetime.timedelta(days=1)
-	return weeks
+		date += datetime.timedelta(days=7)
+		weeks.append(date.strftime(date_format))
 def maint_event(summary, start_time, end_time):
 	#Returns the format for creating events in Google Calendar
 	return {'summary':summary, 'start':{'dateTime': start_time,'timeZone': 'America/New_York'},'end':{'dateTime': end_time,'timeZone': 'America/New_York'}}
@@ -70,32 +66,25 @@ def get_youtube_playlist(search_string):
 	for video in soup.findAll(attrs={"class":"yt-uix-tile-link"}):
 		playlist.append("https://www.youtube.com%s" %(video["href"]))
 	return playlist
-def generate_response():
-	#Returns the response for the frontend
-	global maint_events
-	response = {}
+def add_to_calendar_gen_response(creds):
+	#Adds maintenance events to the user's Google Calendar, then populates the response dictionary
+	global maint_events, response
+	service = build('calendar', 'v3', credentials=creds)
+	calendar_list_entry = service.calendarList().get(calendarId='primary').execute()
 	for event in maint_events:
 		current_event = service.events().insert(calendarId='primary', body=event).execute()
 		response[event['summary']] = [{"calendar_event" : current_event.get('htmlLink')}, {"playlist" : get_youtube_playlist(event['summary'])}]
-	return response
+	if calendar_list_entry['accessRole']:
+		for key in response:
+			print("\n%s:\nCalendar Event:\n%s\nPlaylist:\n%s\n" %(key, response[key][0]['calendar_event'], response[key][1]['playlist']))
 if __name__ == "__main__":
-	if len(sys.argv) < 2:
-		print("Type:\tpython3 car_maintenance_calendar.py --noauth_local_webserver")
-		exit()
 	SCOPES = "https://www.googleapis.com/auth/calendar"
 	secret_file = "calendar_key.json"
-	'''store = file.Storage('calendar_token.json')
-	creds = store.get()
-	if not creds or creds.invalid:
-		flow = client.flow_from_clientsecrets('calendar_key.json', SCOPES)
-		creds = tools.run_flow(flow, store)'''
 	creds = google_oauth2(secret_file, SCOPES)
-	service = build('calendar', 'v3', credentials=creds)
-	calendar_list_entry = service.calendarList().get(calendarId='primary').execute()
 	date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 	day = 'Saturday'
 	num_of_weeks = 4
-	weeks = get_date_for_days(num_of_weeks, date_format)
+	get_dates_for_day(num_of_weeks, date_format, day)
 	year = input("Year: ")
 	make = input("Make: ").upper()
 	model = input("Model: ").upper()
@@ -103,9 +92,7 @@ if __name__ == "__main__":
 	weekly_mileage = int(input("Weekly Mileage: "))
 	mileage = str(int(current_mileage) + int(weekly_mileage))
 	api_endpoint = "http://api.carmd.com/v3.0/maint?year=%s&make=%s&model=%s&mileage=%s" %(year, make, model, mileage)
-	header = {"content-type":"application/json", "authorization":"Basic MGE2OTJlMWQtY2M5YS00OWMwLTlmYTItNzNjZGFjMjYyZjBm", "partner-token":"8205959faed74cbcb946419b79e80a87"}  
+	header = {"content-type":"application/json", "authorization":"Basic MGE2OTJlMWQtY2M5YS00OWMwLTlmYTItNzNjZGFjMjYyZjBm", "partner-token":"8205959faed74cbcb946419b79e80a87"}
 	get_car_maint(api_endpoint, header, year, make, model)
-	if calendar_list_entry['accessRole']:
-		my_response = generate_response()
-		for key in my_response:
-			print("\n%s:\nCalendar Event:\n%s\nPlaylist:\n%s\n" %(key, my_response[key][0]['calendar_event'], my_response[key][1]['playlist']))
+	add_to_calendar_gen_response(creds)
+	#print("\n%s"%(response))
