@@ -1,5 +1,0 @@
-#!/usr/bin/env bash
-export RABBITMQ_HOST=
-export RABBITMQ_PORT=5672
-export RABBITMQ_USER=
-export RABBITMQ_PASS=

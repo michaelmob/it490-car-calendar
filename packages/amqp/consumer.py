@@ -13,10 +13,11 @@ class Consumer:
         Initialize LogConsumer.
         """
         credentials = pika.PlainCredentials(username, password)
-        params = pika.ConnectionParameters(host, port, vhost, credentials)
+        params = pika.ConnectionParameters(
+            host, port, vhost, credentials, socket_timeout=3, retry_delay=3
+        )
         connection = pika.BlockingConnection(params)
         self.channel = connection.channel()
-        self.init_message = None
 
 
     def consume(self, queue, callback):

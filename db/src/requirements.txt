@@ -1,3 +1,5 @@
 pika
 mysqlclient
 python-dotenv
+/opt/packages/amqp
+/opt/packages/logger

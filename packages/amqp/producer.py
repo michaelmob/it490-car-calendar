@@ -1,3 +1,4 @@
+import time
 import pika
 import uuid
 
@@ -8,15 +9,19 @@ class Producer:
     Queue producer.
     """
 
-    def __init__(self, host, port, vhost, username, password, is_rpc=False):
+    def __init__(self, host, port, vhost, username, password, is_rpc=False, rpc_attempts=25):
         """
         Initialize Producer instance.
         """
         self.is_rpc = is_rpc
+        self.rpc_attempts = rpc_attempts
 
         # RabbitMQ Auth
         credentials = pika.PlainCredentials(username, password)
-        params = pika.ConnectionParameters(host, port, vhost, credentials)
+        params = pika.ConnectionParameters(
+            host, port, vhost, credentials,
+            socket_timeout=3, stack_timeout=3
+        )
         self.connection = pika.BlockingConnection(params)
         self.channel = self.connection.channel()
 
@@ -57,8 +62,18 @@ class Producer:
 
         # Wait for response if RPC.
         if self.is_rpc:
+            attempts = 0
             while self.response is None:
+                # Try to retrieve data
                 self.connection.process_data_events()
+
+                # Increment attempts or break if attempts have been exceeded
+                if self.response is None:
+                    attempts += 1
+                    if attempts >= self.rpc_attempts:
+                        break
+
+                    time.sleep(0.1)  # This isn't good. But it saves my CPU.
 
         return self.response
 

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}Cars{% endblock %}
+
+{% block content %}
+<table>
+  <thead>
+    <th>Make</th>
+    <th>Model</th>
+    <th>Year</th>
+    <th>Mileage</th>
+  </thead>
+
+  <tbody>
+  {% for car in cars %}
+    {% include 'cars/list_item.html' %}
+  {% endfor %}
+  </tbody>
+</table>
+
+<a href="{{ url_for('cars.add_car') }}">Add Car</a>
+{% endblock %}

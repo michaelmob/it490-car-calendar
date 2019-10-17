@@ -6,12 +6,13 @@ Car Calendar logs are located at /var/logs/car-calendar/
 
 Send a 'Hello World' log:
 -------------------------
-cd /srv/car-calendar/example_senders/
-python3 log_sender.py
+cd /srv/car-calendar/
+python3 example_senders/log_sender.py
 
 Check status of consumers:
 -------------
 systemctl status log-consumer.service
 systemctl status auth-consumer.service
+systemctl status data-consumer.service
 
 ################################################################################

@@ -1,8 +1,12 @@
-import json
-from flask import Flask, render_template, request
-from amqp.producer import Producer
+# Load environment variables.
+import os
+from dotenv import load_dotenv
+load_dotenv(os.getenv('ENV_FILE', '.env'))
 
+# Create and Setup Flask Instance.
+from flask import Flask, session
 app = Flask(__name__)
+<<<<<<< HEAD
 
 
 @app.route('/')
@@ -88,6 +92,26 @@ def logging(event):
     log_file.write(event)
     log_file.close()
 
+=======
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'SECRET')
+
+# Register blueprints
+from views import general, auth, cars
+app.register_blueprint(general.blueprint)
+app.register_blueprint(auth.blueprint)
+app.register_blueprint(cars.blueprint)
+
+# Inject user into all templates
+from producers import get_user
+@app.context_processor
+def inject_user():
+    if session.get('token'):
+        user = get_user(session.get('token'))
+        if user:
+            return { 'user': user }
+    return {}
+>>>>>>> f01aa313f5047608bacdfd3243197ef44deb78f4
 
 if __name__ == '__main__':
+    # Run Flask
     app.run(debug=True, host='0.0.0.0')

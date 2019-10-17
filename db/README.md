@@ -5,10 +5,8 @@
 is required.
 
 1. Inside of the `db/` directory
-2. Copy/duplicate `_env_log` to `.env_log`
-3. Configure newly created `.env_log` file
-4. Copy/duplicate `_auth_log` to `.auth_log`
-5. Configure newly created `.auth_log` file
+2. Copy/duplicate `_env` to `.env`
+3. Configure newly created `.env` file
 
 **Notice how the `_` (underscore) is changed to a `.` (period).**
 These `.env` files can store sensitive data without being commited to version
@@ -27,13 +25,14 @@ vagrant destroy db -f; vagrant up db
 reset/lost as well.
 
 ## Database
-
 | id (AI) | username | password | salt | email               | token  |
 | --      | --       | --       | --   | --                  | --     |
 | 1       | user     | #hash#   | abcd | example@example.com | abc123 |
 
 ### Cars Table
-To be added.
+| id (AI) | user_id (FK) | make   | model | year | mileage | date_created        |
+| --      | --           | --     | --    | --   | --      | --                  |
+| 1       | 1            | Toyota | Camry | 1990 | 100000  | 2019-10-15 12:00:00 |
 
 ### Events Table
 To be designed.
@@ -66,13 +65,14 @@ The consumer expects a JSON string.
 
 **Response Example:**
 The response will be a JSON string. The `success` property is always guaranteed
-to be present whether its `True` or `False`.
+to be present whether its `True` or `False`. A `message` property is also
+guaranteed and will offer a message of status.
 ```python
 # On successful login
-{ 'success': True, 'token': '#custom user token#', 'message': 'Logged in!' }
+{ 'success': True, 'token': '#custom user token#', 'message': 'LOGIN_SUCCESS' }
 
 # On failed login
-{ 'success': False, 'message': 'User does not exist.' }
+{ 'success': False, 'message': 'LOGIN_FAILED' }
 ```
 
 #### Action: `register`
@@ -96,10 +96,10 @@ The response will be a JSON string. The `success` property is always guaranteed
 to be present whether its `True` or `False`.
 ```python
 # On successful register
-{ 'success': True, 'message': 'User created!' }
+{ 'success': True, 'message': 'REGISTER_SUCCESS' }
 
 # On failed register
-{ 'success': False, 'message': 'A user already exists with that username or email.' }
+{ 'success': False, 'message': 'REGISTER_FAILURE' }
 ```
 
 ### Log Consumer

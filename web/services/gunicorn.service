@@ -1,0 +1,12 @@
+[Unit]
+Description=Car Calendar Gunicorn Server
+
+[Service]
+WorkingDirectory=/srv/car-calendar/
+ExecStart=/usr/local/bin/gunicorn --bind 0.0.0.0:5000 main:app
+Restart=always
+RestartSec=1
+User=vagrant
+
+[Install]
+WantedBy=multi-user.target
