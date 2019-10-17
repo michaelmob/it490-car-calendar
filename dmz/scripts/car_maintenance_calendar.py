@@ -21,7 +21,9 @@ def google_oauth2(secret_file, SCOPES):
 	#Returns user's oauth2 credentials to access their Google Calendar
 	flow = Flow.from_client_secrets_file(secret_file, scopes=SCOPES, redirect_uri='urn:ietf:wg:oauth:2.0:oob')
 	auth_url, _ = flow.authorization_url(prompt='consent')
+	#send url to frontend to display...
 	print('Authorization URL:\n {}'.format(auth_url))
+	#receive confirmation code from frontend...
 	code = input("Authorization code: ")
 	flow.fetch_token(code=code)
 	return flow.credentials
@@ -78,21 +80,24 @@ def add_to_calendar_gen_response(creds):
 		for key in response:
 			print("\n%s:\nCalendar Event:\n%s\nPlaylist:\n%s\n" %(key, response[key][0]['calendar_event'], response[key][1]['playlist']))
 if __name__ == "__main__":
+	date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
+        day = 'Saturday'
+        num_of_weeks = 4
+        get_dates_for_day(num_of_weeks, date_format, day)
 	SCOPES = "https://www.googleapis.com/auth/calendar"
 	secret_file = "calendar_key.json"
-	creds = google_oauth2(secret_file, SCOPES)
-	date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
-	day = 'Saturday'
-	num_of_weeks = 4
-	get_dates_for_day(num_of_weeks, date_format, day)
-	year = input("Year: ")
-	make = input("Make: ").upper()
-	model = input("Model: ").upper()
-	current_mileage = int(input("Current Mileage: "))
-	weekly_mileage = int(input("Weekly Mileage: "))
-	mileage = str(int(current_mileage) + int(weekly_mileage))
-	api_endpoint = "http://api.carmd.com/v3.0/maint?year=%s&make=%s&model=%s&mileage=%s" %(year, make, model, mileage)
-	header = {"content-type":"application/json", "authorization":"Basic MGE2OTJlMWQtY2M5YS00OWMwLTlmYTItNzNjZGFjMjYyZjBm", "partner-token":"8205959faed74cbcb946419b79e80a87"}
-	get_car_maint(api_endpoint, header, year, make, model)
-	add_to_calendar_gen_response(creds)
-	#print("\n%s"%(response))
+	while (True):
+		creds = google_oauth2(secret_file, SCOPES)
+		#receive year, make, model, current_mileage, weekly_mileage from frontend...
+		year = input("Year: ")
+		make = input("Make: ").upper()
+		model = input("Model: ").upper()
+		current_mileage = int(input("Current Mileage: "))
+		weekly_mileage = int(input("Weekly Mileage: "))
+		mileage = str(int(current_mileage) + int(weekly_mileage))
+		api_endpoint = "http://api.carmd.com/v3.0/maint?year=%s&make=%s&model=%s&mileage=%s" %(year, make, model, mileage)
+		header = {"content-type":"application/json", "authorization":"Basic MGE2OTJlMWQtY2M5YS00OWMwLTlmYTItNzNjZGFjMjYyZjBm", "partner-token":"8205959faed74cbcb946419b79e80a87"}
+		get_car_maint(api_endpoint, header, year, make, model)
+		add_to_calendar_gen_response(creds)
+		#send response to frontend...
+		#print("\n%s"%(response))
