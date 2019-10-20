@@ -1,4 +1,6 @@
-from ez import ez_log
+import os
+import smtplib
+from ez import *
 import requests
 import datetime
 from googleapiclient.discovery import build
@@ -24,10 +26,10 @@ def google_oauth2(secret_file, SCOPES):
 	#Returns user's oauth2 credentials to access their Google Calendar
 	flow = Flow.from_client_secrets_file(secret_file, scopes=SCOPES, redirect_uri='urn:ietf:wg:oauth:2.0:oob')
 	auth_url, _ = flow.authorization_url(prompt='consent')
-	#send url to frontend to display...
+	#ez_produce("oauth2_url", "DMZ", auth_url, is_rpc=True ) 							#sends oauth2 url for Frontend to display
 	event_logging("oauth2 URL sent: {}".format(auth_url))
 	print('Authorization URL:\n {}'.format(auth_url))
-	#receive confirmation code from frontend...
+	#receive authorization code from frontend...
 	code = input("Authorization code: ")
 	event_logging("Received user's oauth2 confirmation code")
 	try:
@@ -65,17 +67,6 @@ def get_car_maint(header, api_endpoint, year, make, model):
             		maint_events.append(maint_event("%s %s %s %s" %(year, make, model, maint['desc']), weeks[1], weeks[1]))
 		else:
             		maint_events.append(maint_event("%s %s %s %s" %(year, make, model, maint['desc']), weeks[2], weeks[2]))
-def send_recall_info(header, api_endpoint, year, make, model):
-	#Send the information if the car is recalled or not to the frontend
-	event_logging("Querying CarMD Recall API Endpoint: %s %s %s" %(year, make, model))
-	request = requests.get(url = api_endpoint, headers = header)
-	car_recall = request.json()
-	event_logging("Received CarMD Recall API Endpoint Response: %s %s %s" %(year, make, model))
-	if len(car_recall["data"]) < 1:
-		print("No recall data associated with %S %s %s" %(year, make, model))
-	else:
-		print(car_recall["data"])
-	#sends the info back to the frontend
 def get_youtube_playlist(search_string):
 	#Returns the YouTube playlist for each car maintenance information
 	playlist = []
@@ -112,6 +103,32 @@ def send_maint_info(creds):
 		event_logging("Failure Accessing User's Google Calendar")
 		response["Error"] = "Permissions Denied Accessing User's Google Calendar"
 	#send response to the frontend...
+def send_email(users_email, subject, body):
+	#Sends email to an email address
+	account = os.getenv("EMAIL_ADDRESS")
+	password = os.getenv("EMAIL_PASSWORD")
+	smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
+	smtp_server.ehlo()
+	smtp_server.starttls()
+	smtp_server.ehlo()
+	smtp_server.login(account, password)
+	msg = "Subject: %s\n\n%s" %(subject, body)
+	smtp_server.sendmail(account, users_email, msg)
+	smtp_server.close()
+def send_recall_info(header, api_endpoint, year, make, model, users_email):
+	#Emails the information if the car is recalled or not to the user
+	event_logging("Querying CarMD Recall API Endpoint: %s %s %s" %(year, make, model))
+	request = requests.get(url = api_endpoint, headers = header)
+	car_recall = request.json()
+	event_logging("Received CarMD Recall API Endpoint Response: %s %s %s" %(year, make, model))
+	subject = "%s %s %s Recall Info:" %(year, make, model)
+	body = ""
+	if len(car_recall["data"]) < 1:
+		body = "No recall data associated with %s %s %s" %(year, make, model)
+	else:
+		for recall in car_recall["data"]:
+			body += "%s\n" %(recall["desc"])
+	send_email(users_email, subject, body)
 if __name__ == "__main__":
 	date_format = '%Y-%m-%dT%H:%M:%S.%fZ'
 	day = 'Saturday'
@@ -121,7 +138,8 @@ if __name__ == "__main__":
 	secret_file = "calendar_key.json"
 	while (True):
 		#receive year, make, model, current_mileage, weekly_mileage from frontend...
-		year = input("\nYear: ")
+		users_email = input("\nEmail: ")
+		year = input("Year: ")
 		make = input("Make: ").upper()
 		model = input("Model: ").upper()
 		current_mileage = int(input("Current Mileage: "))
@@ -130,13 +148,7 @@ if __name__ == "__main__":
 		header = {"content-type":"application/json", "authorization":"Basic MGE2OTJlMWQtY2M5YS00OWMwLTlmYTItNzNjZGFjMjYyZjBm", "partner-token":"8205959faed74cbcb946419b79e80a87"}
 		api_maint_endpoint = "http://api.carmd.com/v3.0/maint?year=%s&make=%s&model=%s&mileage=%s" %(year, make, model, mileage)
 		api_recall_endpoint = "http://api.carmd.com/v3.0/recall?year=%s&make=%s&model=%s&mileage=%s" %(year, make, model, mileage)
-		#receive user action either recall or maintenance if maintenance then do creds
-		action = input("Enter Maint or Recall: ")
-		if action.lower() == "maint":
-			creds = google_oauth2(secret_file, SCOPES)
-			get_car_maint(header, api_maint_endpoint, year, make, model)
-			send_maint_info(creds)
-		elif action.lower() == "recall":
-			send_recall_info(header, api_recall_endpoint, year, make, model)
-		else:
-			event_logging("Invalid Action Selection: %s" %(action))
+		creds = google_oauth2(secret_file, SCOPES)
+		get_car_maint(header, api_maint_endpoint, year, make, model)
+		send_maint_info(creds)
+		send_recall_info(header, api_recall_endpoint, year, make, model, users_email)
