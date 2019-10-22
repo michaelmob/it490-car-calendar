@@ -11,6 +11,8 @@ Vagrant.configure("2") do |config|
     subconfig.vm.hostname = "dmz"
     subconfig.vm.network "private_network", ip: "10.10.0.3"
     subconfig.vm.provision "shell", path: "dmz/provision-dmz.sh"
+    subconfig.vm.synced_folder "dmz/scripts/", "/api_scripts"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
   end
 
 
