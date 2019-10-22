@@ -1,0 +1,29 @@
+-- Adminer 4.7.3 MySQL dump
+
+SET NAMES utf8;
+SET time_zone = '+00:00';
+SET foreign_key_checks = 0;
+SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
+
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `first_name` varchar(128) DEFAULT NULL,
+  `last_name` varchar(128) DEFAULT NULL,
+  `email` varchar(256) NOT NULL,
+  `username` varchar(256) NOT NULL,
+  `password` varchar(256) NOT NULL,
+  `salt` varchar(256) NOT NULL,
+  `token` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_email` (`email`),
+  UNIQUE KEY `unique_username` (`username`),
+  UNIQUE KEY `unique_token` (`token`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `users` (`id`, `first_name`, `last_name`, `email`, `username`, `password`, `salt`, `token`) VALUES
+(1,	NULL,	NULL,	'test@test.com',	'mike',	'01077fe695a0112d31037e062b5243db970c482985955af689bc2c11192b2930',	'9fff27e2a5e286b59d092e5f88904e30b32e5ca6',	'b4aa6766a554b006273975733223ff2c0e26f157'),
+(5,	NULL,	NULL,	'cool@cool.com',	'cool',	'dfbcb8a695760776a9c47c41da6eb869fa8f7fc3c8fb83673d52b3f3cf8a6db7',	'ebbc4f848aa352be0c38dd4d55987c247b58f93d',	'456be5ac1c07adb1531bbb1bce1a790e4fa0b8f7'),
+(6,	NULL,	NULL,	'aaaaa@aaaaa.com',	'aaaaa',	'14971d4bf7b1729be4e5d71a6683d4413e41478004a7fc56aabe25fa7d36c917',	'6ba504674e99c0958edc24cb1b6544d2e22e9622',	'635179d5c664c6f01d02b9948925c63ace03db09');
+
+-- 2019-10-22 22:58:53
