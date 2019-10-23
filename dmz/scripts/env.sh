@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
-#export RABBITMQ_HOST=
-#export RABBITMQ_PORT=5672
-#export RABBITMQ_AUTH_USER=
-#export RABBITMQ_AUTH_PASS=
-#export RABBITMQ_LOG_USER=
-#export RABBITMQ_LOG_PASS=
-#export RABBITMQ_DATA_USER=
-#export RABBITMQ_DATA_PASS=
+export RABBITMQ_HOST=10.202.135.192
+export RABBITMQ_PORT=5672
+export RABBITMQ_LOG_USER="admin"
+export RABBITMQ_LOG_PASS="adminpass"
+export RABBITMQ_DMZ_USER="admin"
+export RABBITMQ_DMZ_PASS="adminpass"
 export EMAIL_ADDRESS="it490carcalendar@gmail.com"
 export EMAIL_PASSWORD="P@\$\$w0rd#1"
