@@ -77,22 +77,20 @@
 	<center><label for="username">Username:</label></center>
 	<center><input type="text" name="username" id="username" placeholder="username" /></center>
 	<center><label for="pwd">password:</label></center>
-	<center><input type="password" name="password" id="password" placeholder="password" /></center>
+	<center><input type="password" name="password" id="password" placeholder="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required /></center>
 	<center><label for="password">confirm password:</label></center>	
-	<center><input type="password" name="password" id="password" /></center>
+	<center><input type="password" name="password" id="confpassword" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required /></center>
 	<center><input type="checkbox" id="showPwd"></center>
 	<center><label for="showPwd">show password</label></center> 
-	<center><input type="submit" value="Login"></center>
+	<center><input type="submit" value="Login" id="btnSubmit" onclick= "return Validate()" /></center>
 	</fieldset>
 	</form>
 </form>
-	<script type="text/javascript" src="current_validation.js"></script>
+	<script type="text/javascript" src="test.js"></script>
 	<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 	<script type="text/javascript" src="jquery.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
 </body>
 </html>
-
-
 
 
