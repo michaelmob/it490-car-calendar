@@ -1,0 +1,24 @@
+{% extends 'cars/display.html' %}
+
+
+{% block inner_content %}
+<table class="table">
+  <thead>
+    <th>Description</th>
+    <th>Due Mileage</th>
+    <th>Hours</th>
+    <th>Difficulty</th>
+  </thead>
+
+  <tbody>
+    {% for maint in data %}
+      <tr>
+        <td>{{ maint.desc }}</td>
+        <td>{{ maint.due_mileage }}</td>
+        <td>{{ maint.repair.repair_hours }}</td>
+        <td>{{ maint.repair.repair_difficulty }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

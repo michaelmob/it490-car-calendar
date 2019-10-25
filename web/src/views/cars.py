@@ -1,5 +1,5 @@
 import json
-from producers import produce_data
+from producers import produce_data, produce_dmz
 from flask import Blueprint, request, render_template, url_for, redirect, flash, session
 blueprint = Blueprint('cars', __name__, url_prefix='/cars')
 
@@ -103,3 +103,54 @@ def add_car_post():
         return redirect(url_for('cars.list_cars'))
 
     return render_template('cars/create.html', error=error)
+
+
+def car_generic(id, action):
+    """
+    Generic car fetch info from dmz.
+    """
+    if not session.get('token'):
+        return 'Not authed.'
+
+    db_response = produce_data({
+        'action': 'get_car',
+        'id': id,
+        'token': session.get('token')
+    })
+
+    car = db_response.get('car')
+
+    if not car:
+        return 'Car does not exist!'
+
+    dmz_response = produce_dmz({
+        'action': 'get_' + action,
+        'make': car.get('make'),
+        'model': car.get('model'),
+        'year': car.get('year'),
+        'mileage': car.get('mileage'),
+        'token': session.get('token')
+    })
+
+    results = dmz_response.get('results')
+
+    return render_template(
+        f'cars/display_{action}.html',
+        car=car, data=results.get('data') if results else []
+    )
+
+
+@blueprint.route('/<int:id>/recalls')
+def car_recalls(id):
+    """
+    Display individual car recalls.
+    """
+    return car_generic(id, 'recalls')
+
+
+@blueprint.route('/<int:id>/maintenance')
+def car_maintenance(id):
+    """
+    Display individual car maintenance.
+    """
+    return car_generic(id, 'maintenance')

@@ -3,12 +3,25 @@
 {% block title %}View Car{% endblock %}
 
 {% block content %}
-<h1>Make: {{ car.make }}</h1>
-<h2>Model: {{ car.model }}</h2>
-<h3>Year: {{ car.year }}</h3>
-<h4>Mileage: {{ car.mileage }}</h4>
 
-<form action="{{ url_for('cars.delete_car', id=car.id) }}" method="POST">
-  <input type="submit" value="Delete Car" />
+<div class="btn-group">
+  <a href="{{ url_for('cars.car_recalls', id=car.id) }}" class="btn btn-secondary">
+    View Recalls
+  </a>
+  <a href="{{ url_for('cars.car_maintenance', id=car.id) }}" class="btn btn-secondary">
+    View Maintence
+  </a>
+</div>
+
+<form style="float:right" action="{{ url_for('cars.delete_car', id=car.id) }}" method="POST">
+  <button class="btn btn-danger" type="submit">Delete Car</button>
 </form>
+
+<h1>
+  {{ car.year }} {{ car.make }} {{ car.model }}
+  <small>({{ car.mileage }} miles)</small>
+</h1>
+
+{% block inner_content %}{% endblock %}
+
 {% endblock %}
