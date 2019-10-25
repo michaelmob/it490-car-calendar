@@ -31,7 +31,12 @@ def callback(ch, method, props, body):
     action = data.get('action')
     token = data.get('token')
     result = { 'success': True, 'message': 'SUCCESS' }
-    user = users.get_by_token(token, 'id')
+    try:
+        user = users.get_by_token(token, 'id')
+    except Exception as e:
+        result['success'] = False
+        result['message'] = 'USER_GET_ERROR'
+        result['exception'] = str(e)
 
     if not isinstance(user, dict) and user.get('id'):
         result['success'] = False
@@ -41,11 +46,21 @@ def callback(ch, method, props, body):
 
     # Received get_car
     if action == 'get_car':
-        result['car'] = cars.get_car(user_id, data.get('id'))
+        try:
+            result['car'] = cars.get_car(user_id, data.get('id'))
+        except Exception as e:
+            result['success'] = False
+            result['message'] = 'CAR_GET_ERROR'
+            result['exception'] = str(e)
 
     # Received get_cars
     elif action == 'get_cars':
-        result['cars'] = cars.get_cars(user_id)
+        try:
+            result['cars'] = cars.get_cars(user_id)
+        except Exception as e:
+            result['success'] = False
+            result['message'] = 'CARS_GET_ERROR'
+            result['exception'] = str(e)
 
     # Received create_car
     elif action == 'add_car':
@@ -64,7 +79,21 @@ def callback(ch, method, props, body):
 
     # Received delete_car request
     elif action == 'delete_car':
-        cars.delete_car(user_id, data.get('id'))
+        try:
+            cars.delete_car(user_id, data.get('id'))
+        except Exception as e:
+            result['success'] = False
+            result['message'] = 'CAR_DELETE_ERROR'
+            result['exception'] = str(e)
+
+    # Received update_car request
+    elif action == 'update_car' and data.get('mileage'):
+        try:
+            cars.update_car(data.get('mileage'), data.get('id'))
+        except Exception as e:
+            result['success'] = False
+            result['message'] = 'CAR_UPDATE_ERROR'
+            result['exception'] = str(e)
 
     # Unknown action
     else:

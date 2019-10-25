@@ -67,3 +67,16 @@ def delete_car(user_id: int, car_id: int):
     """
     print(user_id, car_id)
     db.execute(query, (user_id, car_id))
+
+
+def update_car(mileage: int, car_id: int):
+    """
+    Get a list of user's cars by the user's token.
+    """
+    query = """
+        UPDATE `cars`
+        SET mileage=%s
+        WHERE cars.id=%s
+    """
+    db.execute(query, (mileage, car_id))
+    return db.fetchall()

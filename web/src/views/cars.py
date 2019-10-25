@@ -40,7 +40,7 @@ def display_car(id):
 @blueprint.route('/<int:id>/delete', methods=['POST'])
 def delete_car(id):
     """
-    Display individual car display template.
+    Delete car from database.
     """
     if not session.get('token'):
         return 'Not authed.'
@@ -57,6 +57,29 @@ def delete_car(id):
         flash('Your car has NOT been deleted!')
 
     return redirect(url_for('cars.list_cars'))
+
+
+@blueprint.route('/<int:id>/update', methods=['POST'])
+def update_car(id):
+    """
+    Update car mileage.
+    """
+    if not session.get('token'):
+        return 'Not authed.'
+
+    response = produce_data({
+        'action': 'update_car',
+        'id': id,
+        'mileage': request.form.get('mileage'),
+        'token': session.get('token')
+    })
+
+    if response and response['success'] == True:
+        flash('Your car mileage has been updated!')
+    else:
+        flash('Your car mileage has NOT been updated!')
+
+    return redirect(url_for('cars.display_car', id=id))
 
 
 @blueprint.route('/add')
