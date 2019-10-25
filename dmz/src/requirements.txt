@@ -1,0 +1,7 @@
+python-dotenv
+google-api-python-client
+google_auth_oauthlib
+httplib2
+oauth2client
+/opt/packages/amqp
+/opt/packages/logger
