@@ -24,6 +24,13 @@ def produce_data(data: dict):
     return produce_rpc('DATA', 'data-queue-rpc', data)
 
 
+def produce_dmz(data: dict):
+    """
+    DMZ producer helper function.
+    """
+    return produce_rpc('DMZ', 'dmz-queue-rpc', data)
+
+
 def get_user(token: str):
     """
     Get user by token.
