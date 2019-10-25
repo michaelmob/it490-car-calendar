@@ -6,7 +6,7 @@ from logger import Logger
 logger = Logger(os.getenv('LOG_FILE', '/var/log/car-calendar'))
 
 
-def ez_produce(name, queue, data, is_rpc=False):
+def ez_produce(name, queue, data, is_rpc=False, rpc_attempts=25):
     """
     Send data to queue.
     """
@@ -22,7 +22,8 @@ def ez_produce(name, queue, data, is_rpc=False):
             vhost=os.getenv('RABBITMQ_VHOST', '/'),
             username=os.getenv('RABBITMQ_%s_USER' % name),
             password=os.getenv('RABBITMQ_%s_PASS' % name),
-            is_rpc=is_rpc
+            is_rpc=is_rpc,
+            rpc_attempts=rpc_attempts
         )
 
         response = json.loads(producer.produce(
