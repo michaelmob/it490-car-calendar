@@ -36,12 +36,12 @@ def register(username, email, password, first_name, last_name):
     query = """
         INSERT INTO `users` (
             `username`, `email`, `password`, `salt`,
-            `first_name`, `last_name`, `token`
-        ) VALUES (%s,%s,%s,%s,%s,%s,%s);"""
+            `first_name`, `last_name`, `token`, `google_token`
+        ) VALUES (%s,%s,%s,%s,%s,%s,%s,%s);"""
 
     try:
         db.execute(query, (
-            username, email, password, salt, first_name, last_name, token
+            username, email, password, salt, first_name, last_name, token, ''
         ))
         conn.commit()
         return message('USER_CREATED', True)

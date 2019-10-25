@@ -27,6 +27,7 @@ def callback(ch, method, props, body):
         return
 
     action = data.get('action')
+    token = data.get('token')
     result = { 'success': False }
 
     # Received get_user attempt
@@ -55,6 +56,8 @@ def callback(ch, method, props, body):
 
     else:
         result['message'] = 'UNKNOWN_ACTION'
+        ez_log('LOG', 'UNKNOWN_ACTION', f'{result['message']} for token: {token}')
+
 
     return json.dumps(result, default=default)
 

@@ -2,7 +2,7 @@
 import os, sys, json
 from datetime import date, datetime
 from dotenv import load_dotenv; load_dotenv()
-from ez import ez_consume
+from ez import ez_consume, ez_log
 from database import users, cars
 
 
@@ -30,17 +30,23 @@ def callback(ch, method, props, body):
     # Collect values
     action = data.get('action')
     token = data.get('token')
+    id = data.get('id')
+
     result = { 'success': True, 'message': 'SUCCESS' }
     try:
         user = users.get_by_token(token, 'id')
     except Exception as e:
         result['success'] = False
         result['message'] = 'USER_GET_ERROR'
+        ez_log('LOG', result['message'], f'Token: {token} ({str(e)})')
         result['exception'] = str(e)
+        return result
 
-    if not isinstance(user, dict) and user.get('id'):
+    if not isinstance(user, dict):
         result['success'] = False
         result['message'] = 'USER_NOT_FOUND'
+        ez_log('LOG', result['message'], f'Token: {token}')
+        return result
 
     user_id = user.get('id')
 
@@ -52,6 +58,8 @@ def callback(ch, method, props, body):
             result['success'] = False
             result['message'] = 'CAR_GET_ERROR'
             result['exception'] = str(e)
+            ez_log('LOG', result['message'], f'Token: {token} ({str(e)}), ID: {id}')
+            return result
 
     # Received get_cars
     elif action == 'get_cars':
@@ -60,6 +68,7 @@ def callback(ch, method, props, body):
         except Exception as e:
             result['success'] = False
             result['message'] = 'CARS_GET_ERROR'
+            ez_log('LOG', result['message'], f'Token: {token} ({str(e)})')
             result['exception'] = str(e)
 
     # Received create_car
@@ -70,12 +79,15 @@ def callback(ch, method, props, body):
                 data.get('make'),
                 data.get('model'),
                 data.get('year'),
-                data.get('mileage')
+                data.get('mileage'),
+                data.get('weekly_mileage')
             )
         except Exception as e:
             result['success'] = False
             result['message'] = 'CAR_ADD_ERROR'
             result['exception'] = str(e)
+            ez_log('LOG', result['message'], f'Token: {token} ({str(e)})')
+            return result
 
     # Received delete_car request
     elif action == 'delete_car':
@@ -85,20 +97,27 @@ def callback(ch, method, props, body):
             result['success'] = False
             result['message'] = 'CAR_DELETE_ERROR'
             result['exception'] = str(e)
+            ez_log('LOG', result['message'], f'Token: {token} ({str(e)}), ID: {id}')
+            return result
 
     # Received update_car request
     elif action == 'update_car' and data.get('mileage'):
         try:
-            cars.update_car(data.get('mileage'), data.get('id'))
+            cars.update_car(
+                data.get('id'), data.get('mileage'), data.get('weekly_mileage')
+            )
         except Exception as e:
             result['success'] = False
             result['message'] = 'CAR_UPDATE_ERROR'
             result['exception'] = str(e)
+            ez_log('LOG', result['message'], f'Token: {token} ({str(e)}), ID: {id}')
+            return result
 
     # Unknown action
     else:
         result['success'] = False
         result['message'] = 'UNKNOWN_ACTION'
+        ez_log('LOG', result['message'], f'Token: {token}')
 
     return json.dumps(result, default=default)
 
