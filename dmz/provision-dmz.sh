@@ -11,3 +11,8 @@ pip3 install -r /srv/car-calendar/requirements.txt
 # Setup permissions on logs
 mkdir -p /var/log/car-calendar
 chown -R vagrant:syslog /var/log/car-calendar
+
+# Install services
+cp /vagrant/db/services/dmz-consumer.service /etc/systemd/system/
+
+systemctl --now enable dmz-consumer.service
