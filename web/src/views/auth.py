@@ -88,3 +88,13 @@ def login_post():
         error = 'Invalid credentials.'
 
     return render_template('auth/login.html', error=error)
+
+
+@blueprint.route('/logout')
+def logout():
+    """
+    Log user out by clearing session.
+    """
+    session.clear()
+    flash('Logged out!')
+    return redirect(url_for('general.index'))

@@ -3,7 +3,10 @@
 {% block title %}Cars{% endblock %}
 
 {% block content %}
-<table>
+<a class="btn btn-primary" href="{{ url_for('cars.add_car') }}">Add Car</a>
+<br/><br/>
+
+<table class="table">
   <thead>
     <th>Make</th>
     <th>Model</th>
@@ -12,11 +15,10 @@
   </thead>
 
   <tbody>
-  {% for car in cars %}
-    {% include 'cars/list_item.html' %}
-  {% endfor %}
+    {% for car in cars %}
+      {% include 'cars/list_item.html' %}
+    {% endfor %}
   </tbody>
 </table>
 
-<a href="{{ url_for('cars.add_car') }}">Add Car</a>
 {% endblock %}
