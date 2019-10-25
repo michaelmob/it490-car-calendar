@@ -71,6 +71,7 @@ def update_car(id):
         'action': 'update_car',
         'id': id,
         'mileage': request.form.get('mileage'),
+        'weekly_mileage': request.form.get('weekly_mileage'),
         'token': session.get('token')
     })
 
@@ -99,6 +100,7 @@ def add_car_post():
     model = request.form.get("model")
     year = request.form.get("year")
     mileage = request.form.get("mileage")
+    weekly_mileage = request.form.get("weekly_mileage")
     error = None
 
     if not make:
@@ -118,12 +120,16 @@ def add_car_post():
             'make': make,
             'model': model,
             'year': year,
-            'mileage': mileage
+            'mileage': mileage,
+            'weekly_mileage': weekly_mileage
         })
 
     if response and response['success'] == True:
         flash('Your car has been added!')
         return redirect(url_for('cars.list_cars'))
+    else:
+        flash('Your car has NOT been added!')
+
 
     return render_template('cars/create.html', error=error)
 
@@ -142,7 +148,6 @@ def car_generic(id, action):
     })
 
     car = db_response.get('car')
-
     if not car:
         return 'Car does not exist!'
 
@@ -177,3 +182,46 @@ def car_maintenance(id):
     Display individual car maintenance.
     """
     return car_generic(id, 'maintenance')
+
+
+@blueprint.route('/<int:id>/maintenance', methods=['POST'])
+def car_maintenance_post(id):
+    """
+    Get YouTube video.
+    """
+    if not session.get('token'):
+        return 'Not authed.'
+
+    db_response = produce_data({
+        'action': 'get_car',
+        'id': id,
+        'token': session.get('token')
+    })
+
+    car = db_response.get('car')
+    if not car:
+        return 'Car does not exist!'
+
+    query = request.form.get('query')
+    year = car.get('year')
+    make = car.get('make')
+    model = car.get('model')
+
+    dmz_response = produce_dmz({
+        'action': 'youtube_search',
+        'query': f'{year} {make} {model} {query}',
+        'token': session.get('token')
+    })
+
+    if not dmz_response:
+        return 'No response from DMZ!'
+
+    video_id = None
+    try:
+        video_id = dmz_response['results'][0]['id']['videoId']
+    except:
+        return 'No video found!'
+
+    return render_template(
+        'cars/display_video.html', car=car, query=query, video_id=video_id
+    )

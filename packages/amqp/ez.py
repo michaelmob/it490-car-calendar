@@ -49,7 +49,7 @@ def ez_produce(name, queue, data, is_rpc=False, rpc_attempts=25):
 
     # Type errors happen when data cannot be serialized to JSON
     except TypeError as e:
-        logger.write_log('%s_PRODUCER_ERROR' % name, e)
+        logger.write_log('%s_PRODUCER_ERROR' % name, str(e))
         return False
 
     # Any other exception
@@ -57,7 +57,7 @@ def ez_produce(name, queue, data, is_rpc=False, rpc_attempts=25):
         if is_rpc:
             raise e
         else:
-            logger.write_log('%s_PRODUCER_ERROR' % name, e)
+            logger.write_log('%s_PRODUCER_ERROR' % name, str(e))
             return False
 
     if not is_rpc:

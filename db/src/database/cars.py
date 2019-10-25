@@ -4,15 +4,15 @@ from MySQLdb._exceptions import IntegrityError
 
 
 
-def add_car(user_id: int, make: str, model: str, year: int, mileage: int):
+def add_car(user_id: int, make: str, model: str, year: int, mileage: int, weekly_mileage: int):
     """
     Insert a car row into the cars table.
     """
     message = lambda m, s=False: { 'message': m, 'success': s }
     query = """
         INSERT INTO `cars` (
-            `user_id`,  `make`, `model`, `year`, `mileage`
-        ) VALUES (%s, %s, %s, %s, %s);
+            `user_id`,  `make`, `model`, `year`, `mileage`, `weekly_mileage`
+        ) VALUES (%s, %s, %s, %s, %s, %s);
     """
 
     user = users.get_by_id(user_id)
@@ -21,7 +21,7 @@ def add_car(user_id: int, make: str, model: str, year: int, mileage: int):
 
     try:
         db.execute(query, (
-            user_id, make, model, year, mileage
+            user_id, make, model, year, mileage, weekly_mileage
         ))
         conn.commit()
         return message('Car added!', True)
@@ -69,14 +69,14 @@ def delete_car(user_id: int, car_id: int):
     db.execute(query, (user_id, car_id))
 
 
-def update_car(mileage: int, car_id: int):
+def update_car(car_id: int, mileage: int, weekly_mileage: int):
     """
     Get a list of user's cars by the user's token.
     """
     query = """
         UPDATE `cars`
-        SET mileage=%s
+        SET mileage=%s, weekly_mileage=%s
         WHERE cars.id=%s
     """
-    db.execute(query, (mileage, car_id))
+    db.execute(query, (mileage, weekly_mileage, car_id))
     return db.fetchall()

@@ -44,5 +44,8 @@ class Logger:
         """
         Write message to log file.
         """
+        if message_type is None or message is None:
+            return
+
         with open(self.get_log_filename(), 'a+') as f:
             f.write(self.format_message(message_type, message))
