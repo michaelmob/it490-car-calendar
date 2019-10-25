@@ -8,6 +8,7 @@ CREATE TABLE `users` (
   `password` varchar(256) NOT NULL,
   `salt` varchar(256) NOT NULL,
   `token` varchar(128) NOT NULL,
+  `google_token` varchar(128) NULL,
   `date_created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `date_updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
