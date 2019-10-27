@@ -47,6 +47,8 @@ def callback(ch, method, props, body):
     elif action == 'get_maintenance':
         try:
             result['results'] = carmd.get_maintenance(*car_md_args(data))
+            if result['results']['message'].get('code') == 1003:
+                ez_log('LOG', 'CARMD_API_OUT_OF_CREDITS', 'Maintenance')
         except Exception as e:
             result['success'] = False
             ez_log('LOG', 'GET_MAINTENANCE', str(e))
@@ -55,6 +57,8 @@ def callback(ch, method, props, body):
     elif action == 'get_recalls':
         try:
             result['results'] = carmd.get_recalls(*car_md_args(data))
+            if result['results']['message'].get('code') == 1003:
+                ez_log('LOG', 'CARMD_API_OUT_OF_CREDITS', 'Recalls')
         except Exception as e:
             result['success'] = False
             ez_log('LOG', 'GET_RECALLS', str(e))

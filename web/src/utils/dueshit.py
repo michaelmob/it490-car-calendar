@@ -11,7 +11,10 @@ def get_car_maintenance_stuff(car):
     })
 
     daily_mileage = int(car.get('weekly_mileage')) / 7
-    data = dmz_response.get('data', []) or []
+    if not dmz_response.get('results'):
+        return []
+
+    data = dmz_response['results'].get('data')
     if data is None:
         return []
 

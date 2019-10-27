@@ -194,8 +194,6 @@ def car_maintenance(id):
         return 'Car does not exist!'
 
     data = get_car_maintenance_stuff(car)
-    if data is None:
-        data = []
     return render_template(f'cars/display_maintenance.html', car=car, data=data)
 
 
