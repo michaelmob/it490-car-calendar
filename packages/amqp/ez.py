@@ -15,6 +15,9 @@ def ez_produce(name, queue, data, is_rpc=False, rpc_attempts=25):
 
     name = name.upper()
 
+    if not data:
+        return False
+
     try:
         producer = Producer(
             host=os.getenv('RABBITMQ_HOST'),
@@ -26,10 +29,14 @@ def ez_produce(name, queue, data, is_rpc=False, rpc_attempts=25):
             rpc_attempts=rpc_attempts
         )
 
-        response = json.loads(producer.produce(
+        response = producer.produce(
             queue=os.getenv('RABBITMQ_%s_QUEUE' % name, queue),
             value=json.dumps(data)
-        ))
+        )
+
+        # This MUST be ran through json.loads again...
+        if response:
+            response = json.loads(response)
 
     # Couldn't connect to rabbitmq, most likely
     except AttributeError as e:
@@ -44,12 +51,12 @@ def ez_produce(name, queue, data, is_rpc=False, rpc_attempts=25):
             'RABBITMQ_%s_USER': os.getenv('RABBITMQ_%s_USER' % name),
             'RABBITMQ_%s_PASS': os.getenv('RABBITMQ_%s_PASS' % name),
         })
-        logger.write_log('%s_PRODUCER_ERROR' % name, message)
+        logger.write_log('%s_PRODUCER_ERROR_ATTR_ERROR' % name, message)
         return False
 
     # Type errors happen when data cannot be serialized to JSON
     except TypeError as e:
-        logger.write_log('%s_PRODUCER_ERROR' % name, str(e))
+        logger.write_log('%s_PRODUCER_ERROR_TYPE_ERROR' % name, str(e))
         return False
 
     # Any other exception
@@ -97,10 +104,12 @@ def ez_consume(name, queue, callback):
 def ez_log(name, message_type, message):
     """
     Produce log to amqp broker and write to local log.
+
+    `name` argument is now unneeded.
     """
     # Local Write
     logger.write_log(message_type, message)
 
     # External Write
     data = { 'message_type': message_type, 'message': message }
-    ez_produce(name, os.getenv('RABBITMQ_LOG_QUEUE', 'log-queue'), data)
+    ez_produce('LOG', os.getenv('RABBITMQ_LOG_QUEUE', 'log-queue'), data)

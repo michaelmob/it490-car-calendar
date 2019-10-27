@@ -9,7 +9,10 @@
     View Recalls
   </a>
   <a href="{{ url_for('cars.car_maintenance', id=car.id) }}" class="btn btn-secondary">
-    View Maintence
+    View Maintenance
+  </a>
+  <a href="{{ url_for('cars.add_events_to_calendar', id=car.id) }}" class="btn btn-secondary">
+    Add Maintenance Events to Google Calendar
   </a>
 </div>
 

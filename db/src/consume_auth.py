@@ -56,7 +56,7 @@ def callback(ch, method, props, body):
 
     else:
         result['message'] = 'UNKNOWN_ACTION'
-        ez_log('LOG', 'UNKNOWN_ACTION', f'{result['message']} for token: {token}')
+        ez_log('LOG', result['message'], f'For token: {token}')
 
 
     return json.dumps(result, default=default)

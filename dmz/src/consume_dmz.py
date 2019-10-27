@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import os, json, requests, html
-import youtube, carmd
+import youtube, carmd, google_calendar
 from dotenv import load_dotenv; load_dotenv()
 from datetime import date, datetime
 from ez import ez_consume, ez_log
@@ -36,15 +36,46 @@ def callback(ch, method, props, body):
 
     # Received youtube search request
     if action == 'youtube_search':
-        result['results'] = youtube.search(data.get('query'))
+        try:
+            result['results'] = youtube.search(data.get('query'))
+            raise 'www'
+        except Exception as e:
+            result['success'] = False
+            ez_log('LOG', 'YOUTUBE_SEARCH', str(e))
 
     # Received car maintence request
     elif action == 'get_maintenance':
-        result['results'] = carmd.get_maintenance(*car_md_args(data))
+        try:
+            result['results'] = carmd.get_maintenance(*car_md_args(data))
+        except Exception as e:
+            result['success'] = False
+            ez_log('LOG', 'GET_MAINTENANCE', str(e))
 
     # Received car recalls request
     elif action == 'get_recalls':
-        result['results'] = carmd.get_recalls(*car_md_args(data))
+        try:
+            result['results'] = carmd.get_recalls(*car_md_args(data))
+        except Exception as e:
+            result['success'] = False
+            ez_log('LOG', 'GET_RECALLS', str(e))
+
+    # Received oauth link request
+    elif action == 'get_oauth_link':
+        try:
+            result['results'] = google_calendar.get_oauth_link()
+        except Exception as e:
+            result['success'] = False
+            ez_log('LOG', 'GET_OAUTH_LINK', str(e))
+
+    # Received oauth link request
+    elif action == 'add_events':
+        oauth_code = data.get('oauth_code')
+        events = data.get('events')
+        try:
+            result['results'] = google_calendar.add_events(oauth_code, events)
+        except Exception as e:
+            result['success'] = False
+            ez_log('LOG', 'ADD_EVENTS', str(e))
 
     # Unknown action
     else:

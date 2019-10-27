@@ -1,5 +1,7 @@
 import json
+from datetime import date, timedelta
 from producers import produce_data, produce_dmz
+from utils.dueshit import get_car_maintenance_stuff
 from flask import Blueprint, request, render_template, url_for, redirect, flash, session
 blueprint = Blueprint('cars', __name__, url_prefix='/cars')
 
@@ -17,7 +19,11 @@ def list_cars():
         'token': session.get('token')
     })
 
-    return render_template('cars/list.html', cars=response.get('cars'))
+    cars = response.get('cars')
+    if cars is None:
+        cars = []
+
+    return render_template('cars/list.html', cars=cars)
 
 
 @blueprint.route('/<int:id>')
@@ -134,9 +140,10 @@ def add_car_post():
     return render_template('cars/create.html', error=error)
 
 
-def car_generic(id, action):
+@blueprint.route('/<int:id>/recalls')
+def car_recalls(id):
     """
-    Generic car fetch info from dmz.
+    Display individual car recalls.
     """
     if not session.get('token'):
         return 'Not authed.'
@@ -152,7 +159,7 @@ def car_generic(id, action):
         return 'Car does not exist!'
 
     dmz_response = produce_dmz({
-        'action': 'get_' + action,
+        'action': 'get_recalls',
         'make': car.get('make'),
         'model': car.get('model'),
         'year': car.get('year'),
@@ -162,18 +169,10 @@ def car_generic(id, action):
 
     results = dmz_response.get('results')
 
-    return render_template(
-        f'cars/display_{action}.html',
-        car=car, data=results.get('data') if results else []
-    )
-
-
-@blueprint.route('/<int:id>/recalls')
-def car_recalls(id):
-    """
-    Display individual car recalls.
-    """
-    return car_generic(id, 'recalls')
+    data = results.get('data')
+    if data is None:
+        data = []
+    return render_template(f'cars/display_recalls.html', car=car, data=data)
 
 
 @blueprint.route('/<int:id>/maintenance')
@@ -181,7 +180,23 @@ def car_maintenance(id):
     """
     Display individual car maintenance.
     """
-    return car_generic(id, 'maintenance')
+    if not session.get('token'):
+        return 'Not authed.'
+
+    db_response = produce_data({
+        'action': 'get_car',
+        'id': id,
+        'token': session.get('token')
+    })
+
+    car = db_response.get('car')
+    if not car:
+        return 'Car does not exist!'
+
+    data = get_car_maintenance_stuff(car)
+    if data is None:
+        data = []
+    return render_template(f'cars/display_maintenance.html', car=car, data=data)
 
 
 @blueprint.route('/<int:id>/maintenance', methods=['POST'])
@@ -206,14 +221,15 @@ def car_maintenance_post(id):
     year = car.get('year')
     make = car.get('make')
     model = car.get('model')
-
+    full_query = f'{year} {make} {model} {query}'
     dmz_response = produce_dmz({
         'action': 'youtube_search',
-        'query': f'{year} {make} {model} {query}',
+        'query': full_query,
         'token': session.get('token')
     })
 
     if not dmz_response:
+        ez_log('LOG', 'NO_DMZ_RESPONSE_YOUTUBE_SEARCH', full_query)
         return 'No response from DMZ!'
 
     video_id = None
@@ -224,4 +240,88 @@ def car_maintenance_post(id):
 
     return render_template(
         'cars/display_video.html', car=car, query=query, video_id=video_id
+    )
+
+
+@blueprint.route('/<int:id>/add-events')
+def add_events_to_calendar(id):
+    """
+    Add events to google calendar.
+    """
+    if not session.get('token'):
+        return 'Not authed.'
+
+    db_response = produce_data({
+        'action': 'get_car',
+        'id': id,
+        'token': session.get('token')
+    })
+
+    car = db_response.get('car')
+    if not car:
+        return 'Car does not exist!'
+
+    dmz_response = produce_dmz({
+        'action': 'get_oauth_link'
+    })
+
+    if not dmz_response:
+        ez_log('LOG', 'NO_DMZ_RESPONSE_ADD_EVENTS', '...')
+        return 'No response from DMZ!'
+
+    return render_template(
+        'cars/display_add_events.html', car=car, oauth_link=dmz_response.get('results')
+    )
+
+
+@blueprint.route('/<int:id>/add-events', methods=['POST'])
+def add_events_to_calendar_post(id):
+    """
+    Add events to google calendar.
+    """
+    if not session.get('token'):
+        return 'Not authed.'
+
+    db_response = produce_data({
+        'action': 'get_car',
+        'id': id,
+        'token': session.get('token')
+    })
+
+    car = db_response.get('car')
+    if not car:
+        return 'Car does not exist!'
+
+    data = get_car_maintenance_stuff(car)
+
+    if data is None:
+        return 'No data received!'
+
+    events = []
+    year = car.get('year')
+    make = car.get('make')
+    model = car.get('model')
+
+    for event in data:
+        d = date.strftime(date.today() + timedelta(days=event.get('due_in_days', 0)), '%Y-%m-%d')
+        desc = event.get('desc')
+        events.append({
+            'summary': f'{year} {make} {model}: {desc}',
+            'date': d
+        })
+
+    dmz_response = produce_dmz({
+        'action': 'add_events',
+        'oauth_code': request.form.get('oauth_code'),
+        'events': events,
+    })
+
+    if dmz_response and dmz_response['success'] == True:
+        flash('Events have been added to your calendar!')
+    else:
+        flash('Events have NOT been added to your calendar.')
+
+    return render_template(
+        'cars/display_add_events.html',
+        car=car, results=dmz_response.get('results')
     )

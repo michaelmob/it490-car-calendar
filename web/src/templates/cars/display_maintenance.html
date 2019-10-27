@@ -5,7 +5,9 @@
 <table class="table">
   <thead>
     <th>Description</th>
-    <th>Due Mileage</th>
+    <th>Due Every X Miles</th>
+    <th>Due in X Miles</th>
+    <th>Due in X Days</th>
     <th>Hours</th>
     <th>Difficulty</th>
     <th></th>
@@ -13,9 +15,12 @@
 
   <tbody>
     {% for maint in data %}
+      {% if maint.due_in_miles > 0 %}
       <tr>
         <td>{{ maint.desc }}</td>
-        <td>{{ maint.due_mileage }}</td>
+        <td>{{ maint.due_mileage }} miles</td>
+        <td>{{ maint.due_in_miles }} miles</td>
+        <td>{{ maint.due_in_days }} days</td>
         <td>{{ maint.repair.repair_hours }}</td>
         <td>{{ maint.repair.repair_difficulty }}</td>
         <td>
@@ -25,6 +30,7 @@
           </form>
         </td>
       </tr>
+      {% endif %}
     {% endfor %}
   </tbody>
 </table>
