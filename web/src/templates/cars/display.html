@@ -5,14 +5,17 @@
 {% block content %}
 
 <div class="btn-group">
-  <a href="{{ url_for('cars.car_recalls', id=car.id) }}" class="btn btn-secondary">
+  <a href="{{ url_for('cars.car_recalls', id=car.id) }}" class="btn btn-warning">
     View Recalls
   </a>
   <a href="{{ url_for('cars.car_maintenance', id=car.id) }}" class="btn btn-secondary">
     View Maintenance
   </a>
-  <a href="{{ url_for('cars.add_events_to_calendar', id=car.id) }}" class="btn btn-secondary">
+  <a href="{{ url_for('cars.add_events_to_calendar', id=car.id) }}" class="btn btn-success">
     Add Maintenance Events to Google Calendar
+  </a>
+  <a href="{{ url_for('cars.video_playlist', id=car.id) }}" class="btn btn-danger">
+    Video Playlist
   </a>
 </div>
 
@@ -29,7 +32,12 @@
 </h1>
 
 {% block inner_content %}
+
 <form action="{{ url_for('cars.update_car', id=car.id) }}" method="POST">
+  <div class="alert alert-danger" role="alert">
+    Your car may have recalls! Check the 'View Recalls' tab!
+  </div>
+
   <div class="form-group">
     <label>Total Mileage</label>
     <input class="form-control" type="number" name="mileage" value="{{ car.mileage }}" required />

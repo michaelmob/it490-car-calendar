@@ -241,6 +241,51 @@ def car_maintenance_post(id):
     )
 
 
+@blueprint.route('/<int:id>/video-playlist')
+def video_playlist(id):
+    """
+    Get YouTube video playlist.
+    """
+    if not session.get('token'):
+        return 'Not authed.'
+
+    db_response = produce_data({
+        'action': 'get_car',
+        'id': id,
+        'token': session.get('token')
+    })
+
+    car = db_response.get('car')
+    if not car:
+        return 'Car does not exist!'
+
+    query = request.form.get('query')
+    year = car.get('year')
+    make = car.get('make')
+    model = car.get('model')
+    full_query = f'{year} {make} {model} {query}'
+    dmz_response = produce_dmz({
+        'action': 'youtube_search',
+        'query': full_query,
+        'token': session.get('token')
+    })
+
+    if not dmz_response:
+        ez_log('LOG', 'NO_DMZ_RESPONSE_YOUTUBE_SEARCH', full_query)
+        return 'No response from DMZ!'
+
+    videos = []
+    for video in dmz_response.get('results', []):
+        try:
+            videos.append(video['id']['videoId'])
+        except:
+            pass
+
+    return render_template(
+        'cars/display_videos.html', car=car, videos=videos
+    )
+
+
 @blueprint.route('/<int:id>/add-events')
 def add_events_to_calendar(id):
     """
