@@ -15,6 +15,10 @@ body{
 	color:white;
 }
 
+#error-text {
+	color: red;
+}
+
 /* Style all input fields */
 input {
   width: 25%;
@@ -31,4 +35,4 @@ input[type=submit] {
   background-color: #4CAF50;
   color: black;
 }
-
+=
