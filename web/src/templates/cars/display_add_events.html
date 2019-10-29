@@ -1,0 +1,29 @@
+{% extends 'cars/display.html' %}
+
+
+{% block inner_content %}
+<a class="btn btn-warning" target="_blank" href="{{ oauth_link }}">
+  Get OAuth Access Code to your Google Account
+</a>
+
+<br/>
+<br/>
+
+<form method="POST">
+  <div class="form-group">
+    <label>OAuth Code</label>
+    <input class="form-control" type="text" name="oauth_code" required />
+  </div>
+
+  <input class="btn btn-primary" type="submit" value="Add Events" />
+</form>
+
+<p>
+{% if results %}
+  {% for result in results %}
+    <a href="{{ result }}">{{ result }}</a><br/>
+  {% endfor %}
+{% endif %}
+</p>
+
+{% endblock %}

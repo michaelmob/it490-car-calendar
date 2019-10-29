@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -ex
 
-# update package list and install php along with php-amqplib dependencies
+# Update package list and install python and amqp client
 apt-get update
-apt-get install -y nginx php7.2-fpm php7.2-bcmath composer
+apt-get install -y nginx python3 python3-pip
+pip3 install -r /srv/car-calendar/requirements.txt
 
 sites_available_file='/etc/nginx/sites-available/car-calendar'
 sites_enabled_file='/etc/nginx/sites-enabled/car-calendar'
@@ -16,5 +17,19 @@ mv '/tmp/nginx.conf' "$sites_available_file"
 ln -s "$sites_available_file" "$sites_enabled_file"
 
 # Restart nginx to reload configuration
-#systemctl restart nginx
 nginx -s reload
+
+# Link webserver run script to home directory of vagrant
+ln -s /srv/car-calendar/run_dev_server /home/vagrant/
+ln -s /srv/car-calendar/run_prod_server /home/vagrant/
+
+# Setup permissions on logs
+mkdir -p /var/log/car-calendar
+chown -R vagrant:syslog /var/log/car-calendar
+
+# Set helper motd
+mv /tmp/motd /etc/motd
+
+# Install services
+cp /vagrant/web/services/gunicorn.service /etc/systemd/system/
+systemctl --now enable gunicorn.service

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+{% if error %}
+  <p>{{ error }}</p>
+{% endif %}
+
+<form method="post">
+  <table>
+    <tr>
+      <td><label>Username</label></td>
+      <td><input type="text" name="username" required /></td>
+    </tr>
+    <tr>
+      <td><label>E-mail</label></td>
+      <td><input type="email" name="email" required /></td>
+    </tr>
+    <tr>
+      <td><label>First Name</label></td>
+      <td><input type="text" name="first_name" required /></td>
+    </tr>
+    <tr>
+      <td><label>Last Name</label></td>
+      <td><input type="text" name="last_name" required /></td>
+    </tr>
+    <tr>
+      <td><label>Password</label></td>
+      <td><input type="password" name="password" required /></td>
+    </tr>
+    <tr>
+      <td><label>Confirm Password</label></td>
+      <td><input type="password" name="confirm_password" required /></td>
+    </tr>
+    <tr>
+      <td><input type="submit" value="Register" /></td>
+    </tr>
+  </table>
+</form>
+{% endblock %}
