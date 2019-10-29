@@ -41,7 +41,6 @@ doc/
 *.iml
 *.log
 .project
-*.vim
 
 # Ruby Managers
 .rbenv
@@ -52,7 +51,3 @@ doc/
 
 # Box storage for spec
 test/vagrant-spec/boxes/*.box
-
-# Environment
-.env
-.env*
