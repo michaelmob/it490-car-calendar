@@ -15,8 +15,30 @@ Vagrant.configure("2") do |config|
     subconfig.vm.synced_folder "dmz/logs/", "/var/log/car-calendar"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
   end
+  
+  
+  config.vm.define "stagging-dmz" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "stagging-dmz"
+    subconfig.vm.network "private_network", ip: "10.10.0.3"
+    subconfig.vm.provision "shell", path: "stagging-dmz/provision-dmz.sh"
+    subconfig.vm.synced_folder "stagging-dmz/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "stagging-dmz/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
+  end
 
 
+  config.vm.define "dev-dmz" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "dev-dmz"
+    subconfig.vm.network "private_network", ip: "10.10.0.3"
+    subconfig.vm.provision "shell", path: "dev-dmz/provision-dmz.sh"
+    subconfig.vm.synced_folder "dev-dmz/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "dev-dmz/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
+  end
+  
+  
   config.vm.define "web" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "web"
@@ -72,6 +94,16 @@ Vagrant.configure("2") do |config|
       RABBITMQ_ADMIN_USER: "${RABBITMQ_ADMIN_USER:-admin}",
       RABBITMQ_ADMIN_PASS: "${RABBITMQ_ADMIN_PASS:-adminpass}",
     }
+  end
+  
+  
+  config.vm.define "version-control" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "version-control"
+    subconfig.vm.network "private_network", ip: "10.10.0.4"
+    subconfig.vm.network "private_network", ip: "11.11.0.4"
+    subconfig.vm.network "private_network", ip: "12.12.0.4"
+    subconfig.vm.provision "shell", path: "version-control/provision-version-control.sh"
   end
 
 end
