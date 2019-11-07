@@ -38,5 +38,5 @@ then
 	rm -r -f srv
 	rm "$software.tar.gz"
 else
-	echo "Enter either pack to pack version, or unpack to unpack version"
+	echo "Enter either archive to archive version, or deploy to deploy version"
 fi
