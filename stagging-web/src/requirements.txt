@@ -1,0 +1,6 @@
+pika
+flask
+gunicorn
+python-dotenv
+/opt/packages/amqp
+/opt/packages/logger
