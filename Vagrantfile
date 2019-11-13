@@ -108,6 +108,24 @@ Vagrant.configure("2") do |config|
   end
   
   
+  config.vm.define "db-backup" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "db-backup"
+    subconfig.vm.network "private_network", ip: "12.12.0.3"
+    subconfig.vm.network "forwarded_port", guest: 80, host: 3380
+    #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
+    subconfig.vm.synced_folder "db-backup/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "db-backup/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
+
+    subconfig.vm.provision "file", source: "db-backup/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "shell", path: "db-backup/provision-db.sh", env: {
+      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
+      MYSQL_USER: "${MYSQL_USER:-db}",
+      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
+    }
+  end
+  
   config.vm.define "stagging-db" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "stagging-db"
@@ -120,6 +138,25 @@ Vagrant.configure("2") do |config|
 
     subconfig.vm.provision "file", source: "stagging-db/motd", destination: "/tmp/motd"
     subconfig.vm.provision "shell", path: "stagging-db/provision-db.sh", env: {
+      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
+      MYSQL_USER: "${MYSQL_USER:-db}",
+      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
+    }
+  end
+  
+  
+  config.vm.define "stagging-db-backup" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "stagging-db-backup"
+    subconfig.vm.network "private_network", ip: "12.12.0.3"
+    subconfig.vm.network "forwarded_port", guest: 80, host: 3380
+    #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
+    subconfig.vm.synced_folder "stagging-db-backup/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "stagging-db-backup/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
+
+    subconfig.vm.provision "file", source: "stagging-db-backup/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "shell", path: "stagging-db-backup/provision-db.sh", env: {
       MYSQL_DB: "${MYSQL_DB:-carcalendar}",
       MYSQL_USER: "${MYSQL_USER:-db}",
       MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
@@ -145,6 +182,25 @@ Vagrant.configure("2") do |config|
     }
   end
 
+
+
+	config.vm.define "dev-db-backup" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "dev-db-backup"
+    subconfig.vm.network "private_network", ip: "12.12.0.3"
+    subconfig.vm.network "forwarded_port", guest: 80, host: 3380
+    #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
+    subconfig.vm.synced_folder "dev-db-backup/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "dev-db-backup/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
+
+    subconfig.vm.provision "file", source: "dev-db-backup/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "shell", path: "dev-db-backup/provision-db.sh", env: {
+      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
+      MYSQL_USER: "${MYSQL_USER:-db}",
+      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
+    }
+  end
 
   config.vm.define "broker" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
