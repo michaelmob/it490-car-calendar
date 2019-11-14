@@ -112,7 +112,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "db-backup"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
-    subconfig.vm.network "forwarded_port", guest: 80, host: 3380
+    subconfig.vm.network "forwarded_port", guest: 80, host: 4000
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
     subconfig.vm.synced_folder "db-backup/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "db-backup/logs/", "/var/log/car-calendar"
