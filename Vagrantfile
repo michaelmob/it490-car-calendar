@@ -270,8 +270,12 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "version-control"
     subconfig.vm.network "private_network", ip: "10.10.0.4"
-    subconfig.vm.network "private_network", ip: "11.11.0.4"
+    subconfig.vm.network "private_network", ip: "11.11.0.5"
     subconfig.vm.network "private_network", ip: "12.12.0.4"
+	subconfig.vm.network "forwarded_port", guest: 137, host: 137
+    subconfig.vm.network "forwarded_port", guest: 138, host: 138
+	subconfig.vm.network "forwarded_port", guest: 139, host: 139
+    subconfig.vm.network "forwarded_port", guest: 445, host: 445
     subconfig.vm.provision "shell", path: "version-control/provision-version-control.sh"
   end
 
