@@ -6,13 +6,13 @@ Vagrant.configure("2") do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
-  config.vm.define "dmz" do |subconfig|
+  config.vm.define "prod-dmz" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "dmz"
+    subconfig.vm.hostname = "prod-dmz"
     subconfig.vm.network "private_network", ip: "10.10.0.3"
-    subconfig.vm.provision "shell", path: "dmz/provision-dmz.sh"
-    subconfig.vm.synced_folder "dmz/src/", "/srv/car-calendar"
-    subconfig.vm.synced_folder "dmz/logs/", "/var/log/car-calendar"
+    subconfig.vm.provision "shell", path: "prod-dmz/provision-dmz.sh"
+    subconfig.vm.synced_folder "prod-dmz/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "prod-dmz/logs/", "/var/log/car-calendar"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
   end
   
@@ -39,20 +39,20 @@ Vagrant.configure("2") do |config|
   end
   
   
-  config.vm.define "web" do |subconfig|
+  config.vm.define "prod-web" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "web"
+    subconfig.vm.hostname = "prod-web"
     subconfig.vm.network "private_network", ip: "11.11.0.4"
     subconfig.vm.network "forwarded_port", guest: 5000, host: 5000
     subconfig.vm.network "forwarded_port", guest: 80, host: 8080
-    subconfig.vm.synced_folder "web/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "prod-web/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
 
-    subconfig.vm.provision "file", source: "web/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "file", source: "prod-web/motd", destination: "/tmp/motd"
     subconfig.vm.provision "file",
-      source: "web/nginx.conf",
+      source: "prod-web/nginx.conf",
       destination: "/tmp/nginx.conf"
-    subconfig.vm.provision "shell", path: "web/provision-web.sh"
+    subconfig.vm.provision "shell", path: "prod-web/provision-web.sh"
   end
 
 
@@ -89,18 +89,18 @@ Vagrant.configure("2") do |config|
     subconfig.vm.provision "shell", path: "dev-web/provision-web.sh"
   end
 
-  config.vm.define "db" do |subconfig|
+  config.vm.define "prod-db" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "db"
+    subconfig.vm.hostname = "prod-db"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
     subconfig.vm.network "forwarded_port", guest: 80, host: 3380
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
-    subconfig.vm.synced_folder "db/src/", "/srv/car-calendar"
-    subconfig.vm.synced_folder "db/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "prod-db/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "prod-db/logs/", "/var/log/car-calendar"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
 
-    subconfig.vm.provision "file", source: "db/motd", destination: "/tmp/motd"
-    subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
+    subconfig.vm.provision "file", source: "prod-db/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "shell", path: "prod-db/provision-db.sh", env: {
       MYSQL_DB: "${MYSQL_DB:-carcalendar}",
       MYSQL_USER: "${MYSQL_USER:-db}",
       MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
@@ -108,18 +108,18 @@ Vagrant.configure("2") do |config|
   end
   
   
-  config.vm.define "db-backup" do |subconfig|
+  config.vm.define "prod-db-backup" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "db-backup"
+    subconfig.vm.hostname = "prod-db-backup"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
     subconfig.vm.network "forwarded_port", guest: 80, host: 4000
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
-    subconfig.vm.synced_folder "db-backup/src/", "/srv/car-calendar"
-    subconfig.vm.synced_folder "db-backup/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "prod-db-backup/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "prod-db-backup/logs/", "/var/log/car-calendar"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
 
-    subconfig.vm.provision "file", source: "db-backup/motd", destination: "/tmp/motd"
-    subconfig.vm.provision "shell", path: "db-backup/provision-db.sh", env: {
+    subconfig.vm.provision "file", source: "prod-db-backup/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "shell", path: "prod-db-backup/provision-db.sh", env: {
       MYSQL_DB: "${MYSQL_DB:-carcalendar}",
       MYSQL_USER: "${MYSQL_USER:-db}",
       MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
@@ -202,16 +202,16 @@ Vagrant.configure("2") do |config|
     }
   end
 
-  config.vm.define "broker" do |subconfig|
+  config.vm.define "prod-broker" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "broker"
+    subconfig.vm.hostname = "prod-broker"
     subconfig.vm.network "private_network", ip: "10.10.0.2"
     subconfig.vm.network "private_network", ip: "11.11.0.2"
     subconfig.vm.network "private_network", ip: "12.12.0.2"
     subconfig.vm.network "forwarded_port", guest: 5672, host: 5672
     subconfig.vm.network "forwarded_port", guest: 15672, host: 15672
 
-    subconfig.vm.provision "shell", path: "broker/provision-broker.sh", env: {
+    subconfig.vm.provision "shell", path: "prod-broker/provision-broker.sh", env: {
       RABBITMQ_LOG_USER: "${RABBITMQ_LOG_USER:-log}",
       RABBITMQ_LOG_PASS: "${RABBITMQ_LOG_PASS:-logpass}",
       RABBITMQ_WEB_USER: "${RABBITMQ_WEB_USER:-web}",
