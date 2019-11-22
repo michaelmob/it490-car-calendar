@@ -56,3 +56,4 @@ test/vagrant-spec/boxes/*.box
 # Environment
 .env
 .env*
+VERSION
