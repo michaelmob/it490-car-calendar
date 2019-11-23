@@ -32,15 +32,15 @@ chown -R vagrant:syslog /var/log/car-calendar
 mv /tmp/motd /etc/motd
 
 # Create database tables
-for i in $(ls /vagrant/db/sql/*.sql | sort -g); do
+for i in $(ls /vagrant/prod-db-backup/sql/*.sql | sort -g); do
   [ -f "$i" ] || break
   mysql -u root <<< $(sed "1i USE $MYSQL_DB;" "$i")
 done
 
 # Install services
-cp /vagrant/db/services/log-consumer.service /etc/systemd/system/
-cp /vagrant/db/services/auth-consumer.service /etc/systemd/system/
-cp /vagrant/db/services/data-consumer.service /etc/systemd/system/
+cp /vagrant/prod-db-backup/services/log-consumer.service /etc/systemd/system/
+cp /vagrant/prod-db-backup/services/auth-consumer.service /etc/systemd/system/
+cp /vagrant/prod-db-backup/services/data-consumer.service /etc/systemd/system/
 
 systemctl --now enable log-consumer.service
 systemctl --now enable auth-consumer.service

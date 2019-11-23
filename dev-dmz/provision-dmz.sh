@@ -13,6 +13,6 @@ mkdir -p /var/log/car-calendar
 chown -R vagrant:syslog /var/log/car-calendar
 
 # Install services
-cp /vagrant/dmz/services/dmz-consumer.service /etc/systemd/system/
+cp /vagrant/dev-dmz/services/dmz-consumer.service /etc/systemd/system/
 
 systemctl --now enable dmz-consumer.service

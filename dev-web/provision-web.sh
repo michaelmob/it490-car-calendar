@@ -31,5 +31,5 @@ chown -R vagrant:syslog /var/log/car-calendar
 mv /tmp/motd /etc/motd
 
 # Install services
-cp /vagrant/web/services/gunicorn.service /etc/systemd/system/
+cp /vagrant/dev-web/services/gunicorn.service /etc/systemd/system/
 systemctl --now enable gunicorn.service

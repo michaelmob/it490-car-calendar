@@ -6,10 +6,22 @@ Vagrant.configure("2") do |config|
   # For a complete reference, please see the online documentation at
   # https://docs.vagrantup.com.
 
+  config.vm.define "version-control" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "version-control"
+    subconfig.vm.network "private_network", ip: "10.10.0.4"
+    subconfig.vm.network "private_network", ip: "11.11.0.5"
+    subconfig.vm.network "private_network", ip: "12.12.0.4"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 1111
+    subconfig.vm.provision "shell", path: "version-control/provision-version-control.sh"
+  end
+  
+  
   config.vm.define "prod-dmz" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "prod-dmz"
     subconfig.vm.network "private_network", ip: "10.10.0.3"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 2222
     subconfig.vm.provision "shell", path: "prod-dmz/provision-dmz.sh"
     subconfig.vm.synced_folder "prod-dmz/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "prod-dmz/logs/", "/var/log/car-calendar"
@@ -21,6 +33,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "stagging-dmz"
     subconfig.vm.network "private_network", ip: "10.10.0.3"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 2222
     subconfig.vm.provision "shell", path: "stagging-dmz/provision-dmz.sh"
     subconfig.vm.synced_folder "stagging-dmz/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "stagging-dmz/logs/", "/var/log/car-calendar"
@@ -32,6 +45,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "dev-dmz"
     subconfig.vm.network "private_network", ip: "10.10.0.3"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 2222
     subconfig.vm.provision "shell", path: "dev-dmz/provision-dmz.sh"
     subconfig.vm.synced_folder "dev-dmz/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "dev-dmz/logs/", "/var/log/car-calendar"
@@ -43,6 +57,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "prod-web"
     subconfig.vm.network "private_network", ip: "11.11.0.4"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 3333
     subconfig.vm.network "forwarded_port", guest: 5000, host: 5000
     subconfig.vm.network "forwarded_port", guest: 80, host: 8080
     subconfig.vm.synced_folder "prod-web/src/", "/srv/car-calendar"
@@ -60,6 +75,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "stagging-web"
     subconfig.vm.network "private_network", ip: "11.11.0.4"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 3333
     subconfig.vm.network "forwarded_port", guest: 5000, host: 5000
     subconfig.vm.network "forwarded_port", guest: 80, host: 8080
     subconfig.vm.synced_folder "stagging-web/src/", "/srv/car-calendar"
@@ -77,6 +93,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "dev-web"
     subconfig.vm.network "private_network", ip: "11.11.0.4"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 3333
     subconfig.vm.network "forwarded_port", guest: 5000, host: 5000
     subconfig.vm.network "forwarded_port", guest: 80, host: 8080
     subconfig.vm.synced_folder "dev-web/src/", "/srv/car-calendar"
@@ -93,6 +110,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "prod-db"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 4444
     subconfig.vm.network "forwarded_port", guest: 80, host: 3380
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
     subconfig.vm.synced_folder "prod-db/src/", "/srv/car-calendar"
@@ -108,28 +126,11 @@ Vagrant.configure("2") do |config|
   end
   
   
-  config.vm.define "prod-db-backup" do |subconfig|
-    subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "prod-db-backup"
-    subconfig.vm.network "private_network", ip: "12.12.0.3"
-    subconfig.vm.network "forwarded_port", guest: 80, host: 4000
-    #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
-    subconfig.vm.synced_folder "prod-db-backup/src/", "/srv/car-calendar"
-    subconfig.vm.synced_folder "prod-db-backup/logs/", "/var/log/car-calendar"
-    subconfig.vm.synced_folder "packages/", "/opt/packages"
-
-    subconfig.vm.provision "file", source: "prod-db-backup/motd", destination: "/tmp/motd"
-    subconfig.vm.provision "shell", path: "prod-db-backup/provision-db.sh", env: {
-      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
-      MYSQL_USER: "${MYSQL_USER:-db}",
-      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
-    }
-  end
-  
   config.vm.define "stagging-db" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "stagging-db"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 4444
     subconfig.vm.network "forwarded_port", guest: 80, host: 3380
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
     subconfig.vm.synced_folder "stagging-db/src/", "/srv/car-calendar"
@@ -145,29 +146,11 @@ Vagrant.configure("2") do |config|
   end
   
   
-  config.vm.define "stagging-db-backup" do |subconfig|
-    subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "stagging-db-backup"
-    subconfig.vm.network "private_network", ip: "12.12.0.3"
-    subconfig.vm.network "forwarded_port", guest: 80, host: 3380
-    #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
-    subconfig.vm.synced_folder "stagging-db-backup/src/", "/srv/car-calendar"
-    subconfig.vm.synced_folder "stagging-db-backup/logs/", "/var/log/car-calendar"
-    subconfig.vm.synced_folder "packages/", "/opt/packages"
-
-    subconfig.vm.provision "file", source: "stagging-db-backup/motd", destination: "/tmp/motd"
-    subconfig.vm.provision "shell", path: "stagging-db-backup/provision-db.sh", env: {
-      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
-      MYSQL_USER: "${MYSQL_USER:-db}",
-      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
-    }
-  end
-  
-  
   config.vm.define "dev-db" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "dev-db"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 4444
     subconfig.vm.network "forwarded_port", guest: 80, host: 3380
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
     subconfig.vm.synced_folder "dev-db/src/", "/srv/car-calendar"
@@ -181,14 +164,53 @@ Vagrant.configure("2") do |config|
       MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
     }
   end
+  
+  
+  config.vm.define "prod-db-backup" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "prod-db-backup"
+    subconfig.vm.network "private_network", ip: "12.12.0.3"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 5555
+    subconfig.vm.network "forwarded_port", guest: 80, host: 4000
+    #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
+    subconfig.vm.synced_folder "prod-db-backup/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "prod-db-backup/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
 
+    subconfig.vm.provision "file", source: "prod-db-backup/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "shell", path: "prod-db-backup/provision-db.sh", env: {
+      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
+      MYSQL_USER: "${MYSQL_USER:-db}",
+      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
+    }
+  end
+  
+  
+  config.vm.define "stagging-db-backup" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "stagging-db-backup"
+    subconfig.vm.network "private_network", ip: "12.12.0.3"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 5555
+    subconfig.vm.network "forwarded_port", guest: 80, host: 4000
+    #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
+    subconfig.vm.synced_folder "stagging-db-backup/src/", "/srv/car-calendar"
+    subconfig.vm.synced_folder "stagging-db-backup/logs/", "/var/log/car-calendar"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
 
+    subconfig.vm.provision "file", source: "stagging-db-backup/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "shell", path: "stagging-db-backup/provision-db.sh", env: {
+      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
+      MYSQL_USER: "${MYSQL_USER:-db}",
+      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
+    }
+  end
 
-	config.vm.define "dev-db-backup" do |subconfig|
+  config.vm.define "dev-db-backup" do |subconfig|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "dev-db-backup"
     subconfig.vm.network "private_network", ip: "12.12.0.3"
-    subconfig.vm.network "forwarded_port", guest: 80, host: 3380
+	subconfig.vm.network "forwarded_port", guest: 22, host: 5555
+    subconfig.vm.network "forwarded_port", guest: 80, host: 4000
     #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
     subconfig.vm.synced_folder "dev-db-backup/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "dev-db-backup/logs/", "/var/log/car-calendar"
@@ -208,6 +230,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.network "private_network", ip: "10.10.0.2"
     subconfig.vm.network "private_network", ip: "11.11.0.2"
     subconfig.vm.network "private_network", ip: "12.12.0.2"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 6666
     subconfig.vm.network "forwarded_port", guest: 5672, host: 5672
     subconfig.vm.network "forwarded_port", guest: 15672, host: 15672
 
@@ -229,6 +252,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.network "private_network", ip: "10.10.0.2"
     subconfig.vm.network "private_network", ip: "11.11.0.2"
     subconfig.vm.network "private_network", ip: "12.12.0.2"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 6666
     subconfig.vm.network "forwarded_port", guest: 5672, host: 5672
     subconfig.vm.network "forwarded_port", guest: 15672, host: 15672
 
@@ -250,6 +274,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.network "private_network", ip: "10.10.0.2"
     subconfig.vm.network "private_network", ip: "11.11.0.2"
     subconfig.vm.network "private_network", ip: "12.12.0.2"
+	subconfig.vm.network "forwarded_port", guest: 22, host: 6666
     subconfig.vm.network "forwarded_port", guest: 5672, host: 5672
     subconfig.vm.network "forwarded_port", guest: 15672, host: 15672
 
@@ -263,20 +288,6 @@ Vagrant.configure("2") do |config|
       RABBITMQ_ADMIN_USER: "${RABBITMQ_ADMIN_USER:-admin}",
       RABBITMQ_ADMIN_PASS: "${RABBITMQ_ADMIN_PASS:-adminpass}",
     }
-  end
-  
-  
-  config.vm.define "version-control" do |subconfig|
-    subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "version-control"
-    subconfig.vm.network "private_network", ip: "10.10.0.4"
-    subconfig.vm.network "private_network", ip: "11.11.0.5"
-    subconfig.vm.network "private_network", ip: "12.12.0.4"
-	subconfig.vm.network "forwarded_port", guest: 137, host: 137
-    subconfig.vm.network "forwarded_port", guest: 138, host: 138
-	subconfig.vm.network "forwarded_port", guest: 139, host: 139
-    subconfig.vm.network "forwarded_port", guest: 445, host: 445
-    subconfig.vm.provision "shell", path: "version-control/provision-version-control.sh"
   end
 
 end
