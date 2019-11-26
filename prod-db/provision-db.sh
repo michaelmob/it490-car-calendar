@@ -45,3 +45,7 @@ cp /vagrant/prod-db/services/data-consumer.service /etc/systemd/system/
 systemctl --now enable log-consumer.service
 systemctl --now enable auth-consumer.service
 systemctl --now enable data-consumer.service
+
+chmod +x /home/vagrant/db_archive_deploy.sh
+tr -d '\r' <db_archive_deploy.sh> new_db_archive_deploy.sh
+mv new_db_archive_deploy.sh db_archive_deploy.sh

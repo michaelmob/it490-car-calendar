@@ -16,3 +16,7 @@ chown -R vagrant:syslog /var/log/car-calendar
 cp /vagrant/dev-dmz/services/dmz-consumer.service /etc/systemd/system/
 
 systemctl --now enable dmz-consumer.service
+
+chmod +x /home/vagrant/dmz_archive_deploy.sh
+tr -d '\r' <dmz_archive_deploy.sh> new_dmz_archive_deploy.sh
+mv new_dmz_archive_deploy.sh dmz_archive_deploy.sh

@@ -33,3 +33,7 @@ mv /tmp/motd /etc/motd
 # Install services
 cp /vagrant/dev-web/services/gunicorn.service /etc/systemd/system/
 systemctl --now enable gunicorn.service
+
+chmod +x /home/vagrant/web_archive_deploy.sh
+tr -d '\r' <web_archive_deploy.sh> new_web_archive_deploy.sh
+mv new_web_archive_deploy.sh web_archive_deploy.sh
