@@ -44,6 +44,7 @@ def register(username, email, password, first_name, last_name):
             username, email, password, salt, first_name, last_name, token, ''
         ))
         conn.commit()
+        ez_log('AUTH', 'AUTH_EVENT', 'User "%s" registered.' % username)
         return message('USER_CREATED', True)
 
     # Constraint should stop non-unique usernames or emails.
@@ -61,6 +62,7 @@ def login(username_or_email, password):
         return
 
     user = users.get_by_username_or_email(username_or_email)
+    ez_log('AUTH', 'AUTH_EVENT', 'User "%s" attempting logged in.' % username_or_email)
 
     # Get hashed password if user exists
     if user:
@@ -72,6 +74,8 @@ def login(username_or_email, password):
     if not user or (user and user.get('password') != hashed_password):
         ez_log('AUTH', 'AUTH_WARNING', 'Invalid login for "%s".' % username_or_email)
         return { 'message': 'USER_NOT_FOUND', 'success': False }
+
+    ez_log('AUTH', 'AUTH_EVENT', 'User "%s" logged in.' % username_or_email)
 
     # Return user data
     return {
