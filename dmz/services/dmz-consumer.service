@@ -1,10 +1,9 @@
 [Unit]
 Description=Car Calendar DMZ Consumer
-After=mysql.service
 
 [Service]
-WorkingDirectory=/srv/car-calendar/
-ExecStart=/usr/bin/python3 /srv/car-calendar/consume_dmz.py
+WorkingDirectory=/home/vagrant/src/
+ExecStart=/usr/bin/python3 /home/vagrant/src/consume_dmz.py
 Restart=always
 RestartSec=1
 User=vagrant

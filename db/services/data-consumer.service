@@ -3,8 +3,8 @@ Description=Car Calendar Data Consumer
 After=mysql.service
 
 [Service]
-WorkingDirectory=/srv/car-calendar/
-ExecStart=/usr/bin/python3 /srv/car-calendar/consume_data.py
+WorkingDirectory=/home/vagrant/src/
+ExecStart=/usr/bin/python3 /home/vagrant/src/consume_data.py
 Restart=always
 RestartSec=1
 User=vagrant
