@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-cd /srv/car-calendar
+cd /home/vagrant/src
 export FLASK_APP=main.py
 export FLASK_ENV=development
 exec flask run --host=0.0.0.0 $@
