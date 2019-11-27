@@ -19,6 +19,9 @@ def list_cars():
         'token': session.get('token')
     })
 
+    if not response:
+        return 'Data was not returned in time.'
+
     cars = response.get('cars')
     if cars is None:
         cars = []
@@ -40,6 +43,9 @@ def display_car(id):
         'token': session.get('token')
     })
 
+    if not response:
+        return 'Data was not returned in time.'
+
     return render_template('cars/display.html', car=response.get('car'))
 
 
@@ -56,6 +62,9 @@ def delete_car(id):
         'id': id,
         'token': session.get('token')
     })
+
+    if not response:
+        return 'Data was not returned in time.'
 
     if response and response['success'] == True:
         flash('Your car has been deleted!')
@@ -80,6 +89,9 @@ def update_car(id):
         'weekly_mileage': request.form.get('weekly_mileage'),
         'token': session.get('token')
     })
+
+    if not response:
+        return 'Data was not returned in time.'
 
     if response and response['success'] == True:
         flash('Your car mileage has been updated!')
@@ -330,6 +342,9 @@ def add_events_to_calendar_post(id):
         'id': id,
         'token': session.get('token')
     })
+
+    if not response:
+        return 'Data was not returned in time.'
 
     car = db_response.get('car')
     if not car:
