@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 Vagrant.configure("2") do |config|
 
-  version_control = true
+  version_control = false
 
   if version_control
     config.vm.define "version-control" do |subconfig|
@@ -65,10 +65,35 @@ Vagrant.configure("2") do |config|
     subconfig.vm.synced_folder "db/logs/", "/home/vagrant/logs"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
     subconfig.vm.provision "file", source: "db/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "file", source: "db/server1.cnf", destination: "/tmp/mysql.cnf"
     subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
       MYSQL_DB: "${MYSQL_DB:-carcalendar}",
       MYSQL_USER: "${MYSQL_USER:-db}",
       MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
+      MYSQL_MASTER_HOST: "10.0.0.7",
+      MYSQL_REPLICATOR_USER: "${MYSQL_REPLICATOR_USER:-replicator}",
+      MYSQL_REPLICATOR_PASS: "${MYSQL_REPLICATOR_PASS:-replicatorpass}",
+    }
+  end
+
+
+  config.vm.define "db-backup" do |subconfig|
+    subconfig.vm.box = "ubuntu/bionic64"
+    subconfig.vm.hostname = "db-backup"
+    subconfig.vm.network "private_network", ip: "10.0.0.7"
+    subconfig.vm.network "forwarded_port", guest: 80, host: 3381
+    subconfig.vm.synced_folder "db/src/", "/home/vagrant/src" unless version_control
+    subconfig.vm.synced_folder "db/logs/", "/home/vagrant/logs"
+    subconfig.vm.synced_folder "packages/", "/opt/packages"
+    subconfig.vm.provision "file", source: "db/motd", destination: "/tmp/motd"
+    subconfig.vm.provision "file", source: "db/server2.cnf", destination: "/tmp/mysql.cnf"
+    subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
+      MYSQL_DB: "${MYSQL_DB:-carcalendar}",
+      MYSQL_USER: "${MYSQL_USER:-db}",
+      MYSQL_PASS: "${MYSQL_PASS:-dbpass}",
+      MYSQL_MASTER_HOST: "10.0.0.6",
+      MYSQL_REPLICATOR_USER: "${MYSQL_REPLICATOR_USER:-replicator}",
+      MYSQL_REPLICATOR_PASS: "${MYSQL_REPLICATOR_PASS:-replicatorpass}",
     }
   end
 
