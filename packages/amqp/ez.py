@@ -74,7 +74,7 @@ def ez_produce(name, queue, data, is_rpc=False, rpc_attempts=25):
         return json.loads(response) if isinstance(response, str) else response
 
 
-def ez_consume(name, queue, callback):
+def ez_consume(name, queue, callback, priority=1):
     """
     Receive data from queue.
     """
@@ -96,7 +96,8 @@ def ez_consume(name, queue, callback):
     print('[*] Waiting for %s messages. To exit press CTRL+C' % queue)
     consumer.consume(
         queue=os.getenv('RABBITMQ_%s_QUEUE' % name, queue),
-        callback=callback
+        callback=callback,
+        args={'x-priority': priority}
     )
     return True
 
