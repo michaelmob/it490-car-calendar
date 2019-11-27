@@ -27,6 +27,10 @@ def add_car(user_id: int, make: str, model: str, year: int, mileage: int, weekly
         return message('Car added!', True)
 
     except IntegrityError:
+        ez_log(
+            'DATA', 'DATA_WARNING',
+            'Car could not be added for user "%s".' % user_id
+        )
         return message('Something went wrong while adding your car.', False)
 
 
