@@ -3,7 +3,7 @@ from consumer import Consumer
 from producer import Producer
 from logger import Logger
 
-logger = Logger(os.getenv('LOG_FILE', '/var/log/car-calendar'))
+logger = Logger(os.getenv('LOG_FILE', '/home/vagrant/logs'))
 
 
 def ez_produce(name, queue, data, is_rpc=False, rpc_attempts=25):
