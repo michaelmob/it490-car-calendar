@@ -39,3 +39,11 @@ rabbitmq-plugins enable rabbitmq_management
 # Allow password auth (temporarily, until we can copy a key over)
 sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
 service ssh restart
+
+# Set up firewall
+sed -i '/\-\-icmp/d' /etc/ufw/before.rules  # block pinging from unknown
+ufw default deny incoming  # deny all incoming connections
+ufw allow from 10.0.2.0/24 # allow from host
+ufw allow from 10.0.0.0/24 # allow from network
+ufw --force enable
+ufw reload
