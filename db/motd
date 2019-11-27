@@ -1,13 +1,12 @@
 ################################################################################
 
-Consumers are located at /srv/car-calendar/consume_*.py
-Test senders are located at /srv/car-calendar/example_senders/
-Car Calendar logs are located at /var/logs/car-calendar/
+Consumers are located at /home/vagrant/src/consume_*.py
+Test senders are located at /home/vagrant/src/example_senders/
+Car Calendar logs are located at /home/vagrant/logs
 
 Send a 'Hello World' log:
 -------------------------
-cd /srv/car-calendar/
-python3 example_senders/log_sender.py
+python3 /home/vagrant/src/example_senders/log_sender.py
 
 Check status of consumers:
 -------------

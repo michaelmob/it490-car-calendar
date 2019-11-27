@@ -1,11 +1,11 @@
 ################################################################################
 Run development server:
 -------------
-sudo systemctl stop gunicorn.service
-~/run_dev_server
+sudo systemctl stop flask.service
+/home/vagrant/src/run_server
 
-Check status of gunicorn:
+Check status of flask:
 -------------
-systemctl status gunicorn.service
+systemctl status flask.service
 
 ################################################################################
