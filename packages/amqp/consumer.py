@@ -20,14 +20,16 @@ class Consumer:
         self.channel = connection.channel()
 
 
-    def consume(self, queue, callback):
+    def consume(self, queue, callback, args={}):
         """
         Consuming listener.
         """
         self.extra_callback = callback
         self.channel.queue_declare(queue=queue)
         self.channel.basic_qos(prefetch_count=1)
-        self.channel.basic_consume(queue, on_message_callback=self.callback)
+        self.channel.basic_consume(
+            queue, on_message_callback=self.callback, arguments=args
+        )
         self.channel.start_consuming()
 
 
