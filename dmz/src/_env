@@ -1,4 +1,4 @@
-LOG_FILE=/home/vagrant/src/logs
+LOG_FILE=/home/vagrant/logs
 
 GOOGLE_API_KEY=
 CARMD_API_KEY=

@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-export LOG_FILE=/home/vagrant/src/logs
+export LOG_FILE=/home/vagrant/logs
  
 export RABBITMQ_HOST=10.0.0.3
 export RABBITMQ_PORT=5672

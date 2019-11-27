@@ -1,4 +1,4 @@
-LOG_FILE=/home/vagrant/src/logs
+LOG_FILE=/home/vagrant/logs
 
 FLASK_APP=main.py
 FLASK_ENV=development
