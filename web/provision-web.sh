@@ -3,37 +3,15 @@ set -ex
 
 # Update package list and install python and amqp client
 apt-get update
-apt-get install -y nginx python3 python3-pip
-pip3 install -r /srv/car-calendar/requirements.txt
-
-sites_available_file='/etc/nginx/sites-available/car-calendar'
-sites_enabled_file='/etc/nginx/sites-enabled/car-calendar'
-
-# Remove files so we don't error out when it already exists (on conf change)
-rm -f "$sites_available_file" "$sites_enabled_file"
-
-# Move nginx config into sites-avilable and symlink to sites-enabled
-mv '/tmp/nginx.conf' "$sites_available_file"
-ln -s "$sites_available_file" "$sites_enabled_file"
-
-# Restart nginx to reload configuration
-nginx -s reload
-
-# Link webserver run script to home directory of vagrant
-ln -s /srv/car-calendar/run_dev_server /home/vagrant/
-ln -s /srv/car-calendar/run_prod_server /home/vagrant/
-
-# Setup permissions on logs
-mkdir -p /var/log/car-calendar
-chown -R vagrant:syslog /var/log/car-calendar
+apt-get install -y python3 python3-pip
 
 # Set helper motd
 mv /tmp/motd /etc/motd
 
 # Install services
-cp /vagrant/prod-web/services/gunicorn.service /etc/systemd/system/
-systemctl --now enable gunicorn.service
+cp /vagrant/web/services/flask.service /etc/systemd/system/
+systemctl enable flask.service
 
-chmod +x /home/vagrant/web_archive_deploy.sh
-tr -d '\r' <web_archive_deploy.sh> new_web_archive_deploy.sh
-mv new_web_archive_deploy.sh web_archive_deploy.sh
+# Allow password auth (temporarily, until we can copy a key over)
+sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+service ssh restart

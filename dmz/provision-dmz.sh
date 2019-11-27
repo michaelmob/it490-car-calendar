@@ -5,18 +5,10 @@ set -ex
 apt-get update -y
 apt-get install -y python3 python3-pip
 
-# Install pip packages
-pip3 install -r /srv/car-calendar/requirements.txt
-
-# Setup permissions on logs
-mkdir -p /var/log/car-calendar
-chown -R vagrant:syslog /var/log/car-calendar
-
 # Install services
-cp /vagrant/prod-dmz/services/dmz-consumer.service /etc/systemd/system/
+cp /vagrant/dmz/services/dmz-consumer.service /etc/systemd/system/
+systemctl enable dmz-consumer.service
 
-systemctl --now enable dmz-consumer.service
-
-chmod +x /home/vagrant/dmz_archive_deploy.sh
-tr -d '\r' <dmz_archive_deploy.sh> new_dmz_archive_deploy.sh
-mv new_dmz_archive_deploy.sh dmz_archive_deploy.sh
+# Allow password auth (temporarily, until we can copy a key over)
+sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+service ssh restart

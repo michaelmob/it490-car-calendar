@@ -36,6 +36,6 @@ rabbitmqctl set_permissions -p / $RABBITMQ_LOG_USER "^log-.*" "^log-.*" "^log-.*
 # Enable rabbitmq web interface
 rabbitmq-plugins enable rabbitmq_management
 
-chmod +x /home/vagrant/broker_archive_deploy.sh
-tr -d '\r' <broker_archive_deploy.sh> new_broker_archive_deploy.sh
-mv new_broker_archive_deploy.sh broker_archive_deploy.sh
+# Allow password auth (temporarily, until we can copy a key over)
+sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+service ssh restart

@@ -20,32 +20,27 @@ EOF
 apt-get install -y apache2 php php-mysql mysql-client libmysqlclient-dev
 wget 'http://www.adminer.org/latest.php' -O /var/www/html/adminer.php
 
-# Install python and pip and requirements
-apt-get install -y python3 python3-pip
-pip3 install -r /srv/car-calendar/requirements.txt
-
-# Setup permissions on logs
-mkdir -p /var/log/car-calendar
-chown -R vagrant:syslog /var/log/car-calendar
+# Install python and pip and openssl
+apt-get install -y python3 python3-pip libssl-dev
 
 # Set helper motd
 mv /tmp/motd /etc/motd
 
 # Create database tables
-for i in $(ls /vagrant/prod-db/sql/*.sql | sort -g); do
+for i in $(ls /vagrant/db/sql/*.sql | sort -g); do
   [ -f "$i" ] || break
   mysql -u root <<< $(sed "1i USE $MYSQL_DB;" "$i")
 done
 
 # Install services
-cp /vagrant/prod-db/services/log-consumer.service /etc/systemd/system/
-cp /vagrant/prod-db/services/auth-consumer.service /etc/systemd/system/
-cp /vagrant/prod-db/services/data-consumer.service /etc/systemd/system/
+cp /vagrant/db/services/log-consumer.service /etc/systemd/system/
+cp /vagrant/db/services/auth-consumer.service /etc/systemd/system/
+cp /vagrant/db/services/data-consumer.service /etc/systemd/system/
 
-systemctl --now enable log-consumer.service
-systemctl --now enable auth-consumer.service
-systemctl --now enable data-consumer.service
+systemctl enable log-consumer.service
+systemctl enable auth-consumer.service
+systemctl enable data-consumer.service
 
-chmod +x /home/vagrant/db_archive_deploy.sh
-tr -d '\r' <db_archive_deploy.sh> new_db_archive_deploy.sh
-mv new_db_archive_deploy.sh db_archive_deploy.sh
+# Allow password auth (temporarily, until we can copy a key over)
+sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+service ssh restart
