@@ -2,11 +2,16 @@
 # vi: set ft=ruby :
 Vagrant.configure("2") do |config|
 
-  config.vm.define "version-control" do |subconfig|
-    subconfig.vm.box = "ubuntu/bionic64"
-    subconfig.vm.hostname = "version-control"
-    subconfig.vm.network "private_network", ip: "10.0.0.2"
-    subconfig.vm.synced_folder "version-control/src/", "/home/vagrant/src"
+  version_control = true
+
+  if version_control
+    config.vm.define "version-control" do |subconfig|
+      subconfig.vm.box = "ubuntu/bionic64"
+      subconfig.vm.hostname = "version-control"
+      subconfig.vm.network "private_network", ip: "10.0.0.2"
+      subconfig.vm.synced_folder "version-control/src/", "/home/vagrant/src"
+      subconfig.vm.provision "shell", path: "version-control/provision-version-control.sh"
+    end
   end
 
 
@@ -33,6 +38,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.box = "ubuntu/bionic64"
     subconfig.vm.hostname = "dmz"
     subconfig.vm.network "private_network", ip: "10.0.0.4"
+    subconfig.vm.synced_folder "dmz/src/", "/home/vagrant/src" unless version_control
     subconfig.vm.synced_folder "packages/", "/opt/packages"
     subconfig.vm.provision "shell", path: "dmz/provision-dmz.sh"
   end
@@ -43,6 +49,7 @@ Vagrant.configure("2") do |config|
     subconfig.vm.hostname = "web"
     subconfig.vm.network "private_network", ip: "10.0.0.5"
     subconfig.vm.network "forwarded_port", guest: 5000, host: 5000
+    subconfig.vm.synced_folder "web/src/", "/home/vagrant/src" unless version_control
     subconfig.vm.synced_folder "packages/", "/opt/packages"
     subconfig.vm.provision "file", source: "web/motd", destination: "/tmp/motd"
     subconfig.vm.provision "shell", path: "web/provision-web.sh"
@@ -54,7 +61,8 @@ Vagrant.configure("2") do |config|
     subconfig.vm.hostname = "db"
     subconfig.vm.network "private_network", ip: "10.0.0.6"
     subconfig.vm.network "forwarded_port", guest: 80, host: 3380
-    #subconfig.vm.synced_folder "db/data/", "/var/lib/mysql"
+    subconfig.vm.synced_folder "db/src/", "/home/vagrant/src" unless version_control
+    subconfig.vm.synced_folder "db/logs/", "/home/vagrant/logs"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
     subconfig.vm.provision "file", source: "db/motd", destination: "/tmp/motd"
     subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
