@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-export RABBITMQ_HOST=
+export RABBITMQ_HOST=10.0.0.3
 export RABBITMQ_PORT=5672
-export RABBITMQ_AUTH_USER=
-export RABBITMQ_AUTH_PASS=
-export RABBITMQ_LOG_USER=
-export RABBITMQ_LOG_PASS=
-export RABBITMQ_DATA_USER=
-export RABBITMQ_DATA_PASS=
+export RABBITMQ_AUTH_USER=admin
+export RABBITMQ_AUTH_PASS=adminpass
+export RABBITMQ_LOG_USER=admin
+export RABBITMQ_LOG_PASS=adminpass
+export RABBITMQ_DATA_USER=admin
+export RABBITMQ_DATA_PASS=adminpass
 
-export MYSQL_HOST=
+export MYSQL_HOST=localhost
 export MYSQL_PORT=3306
-export MYSQL_DB=
-export MYSQL_USER=
-export MYSQL_PASS=
+export MYSQL_DB=carcalendar
+export MYSQL_USER=db
+export MYSQL_PASS=dbpass

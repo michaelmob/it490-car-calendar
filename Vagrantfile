@@ -7,7 +7,8 @@ Vagrant.configure("2") do |config|
     subconfig.vm.hostname = "version-control"
     subconfig.vm.network "private_network", ip: "10.0.0.2"
     subconfig.vm.network "forwarded_port", guest: 22, host: 1111
-    subconfig.vm.synced_folder "version-control/car-calendar-archive/", "/home/vagrant/car_calendar_archive"
+    subconfig.vm.synced_folder "version-control/car-calendar-archive/",
+      "/home/vagrant/car_calendar_archive"
     subconfig.vm.provision "shell", path: "version-control/provision-version-control.sh"
   end
 
@@ -19,7 +20,9 @@ Vagrant.configure("2") do |config|
     subconfig.vm.network "forwarded_port", guest: 22, host: 2222
     subconfig.vm.network "forwarded_port", guest: 5672, host: 5672
     subconfig.vm.network "forwarded_port", guest: 15672, host: 15672
-    subconfig.vm.provision "file", source: "versioning_scripts/broker_archive_deploy.sh", destination: "/home/vagrant/broker_archive_deploy.sh"
+    subconfig.vm.provision "file",
+      source: "versioning_scripts/broker_archive_deploy.sh",
+      destination: "/home/vagrant/broker_archive_deploy.sh"
     subconfig.vm.provision "shell", path: "broker/provision-broker.sh", env: {
       RABBITMQ_LOG_USER: "${RABBITMQ_LOG_USER:-log}",
       RABBITMQ_LOG_PASS: "${RABBITMQ_LOG_PASS:-logpass}",
@@ -41,7 +44,9 @@ Vagrant.configure("2") do |config|
     subconfig.vm.synced_folder "dmz/src/", "/srv/car-calendar"
     subconfig.vm.synced_folder "dmz/logs/", "/var/log/car-calendar"
     subconfig.vm.synced_folder "packages/", "/opt/packages"
-    subconfig.vm.provision "file", source: "versioning_scripts/dmz_archive_deploy.sh", destination: "/home/vagrant/dmz_archive_deploy.sh"
+    subconfig.vm.provision "file",
+      source: "versioning_scripts/dmz_archive_deploy.sh",
+      destination: "/home/vagrant/dmz_archive_deploy.sh"
     subconfig.vm.provision "shell", path: "dmz/provision-dmz.sh"
   end
 
@@ -60,7 +65,9 @@ Vagrant.configure("2") do |config|
     subconfig.vm.provision "file",
       source: "web/nginx.conf",
       destination: "/tmp/nginx.conf"
-    subconfig.vm.provision "file", source: "versioning_scripts/web_archive_deploy.sh", destination: "/home/vagrant/web_archive_deploy.sh"
+    subconfig.vm.provision "file",
+      source: "versioning_scripts/web_archive_deploy.sh",
+      destination: "/home/vagrant/web_archive_deploy.sh"
     subconfig.vm.provision "shell", path: "web/provision-web.sh"
   end
 
@@ -77,7 +84,9 @@ Vagrant.configure("2") do |config|
     subconfig.vm.synced_folder "packages/", "/opt/packages"
 
     subconfig.vm.provision "file", source: "db/motd", destination: "/tmp/motd"
-    subconfig.vm.provision "file", source: "versioning_scripts/db_archive_deploy.sh", destination: "/home/vagrant/db_archive_deploy.sh"
+    subconfig.vm.provision "file",
+      source: "versioning_scripts/db_archive_deploy.sh",
+      destination: "/home/vagrant/db_archive_deploy.sh"
     subconfig.vm.provision "shell", path: "db/provision-db.sh", env: {
       MYSQL_DB: "${MYSQL_DB:-carcalendar}",
       MYSQL_USER: "${MYSQL_USER:-db}",
