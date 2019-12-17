@@ -1,20 +1,26 @@
 #!/usr/bin/env bash
 set -ex
 
-# update package list and install php along with php-amqplib dependencies
+# Update package list and install python and amqp client
 apt-get update
-apt-get install -y nginx php7.2-fpm php7.2-bcmath composer
+apt-get install -y python3 python3-pip
 
-sites_available_file='/etc/nginx/sites-available/car-calendar'
-sites_enabled_file='/etc/nginx/sites-enabled/car-calendar'
+# Set helper motd
+mv /tmp/motd /etc/motd
 
-# Remove files so we don't error out when it already exists (on conf change)
-rm -f "$sites_available_file" "$sites_enabled_file"
+# Install services
+cp /vagrant/web/services/flask.service /etc/systemd/system/
+systemctl enable flask.service
 
-# Move nginx config into sites-avilable and symlink to sites-enabled
-mv '/tmp/nginx.conf' "$sites_available_file"
-ln -s "$sites_available_file" "$sites_enabled_file"
+# Allow password auth (temporarily, until we can copy a key over)
+sed -i '/PasswordAuthentication/c\PasswordAuthentication yes' /etc/ssh/sshd_config
+service ssh restart
 
-# Restart nginx to reload configuration
-#systemctl restart nginx
-nginx -s reload
+# Set up firewall
+sed -i '/\-\-icmp/d' /etc/ufw/before.rules  # block pinging from unknown
+ufw default deny incoming  # deny all incoming connections
+ufw allow from 10.0.2.0/24 # allow from host
+ufw allow from 10.0.0.2  # version control server
+ufw allow from 10.0.0.3  # broker server
+ufw --force enable
+ufw reload

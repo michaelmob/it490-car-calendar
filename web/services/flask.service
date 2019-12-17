@@ -1,0 +1,12 @@
+[Unit]
+Description=Car Calendar Server
+
+[Service]
+WorkingDirectory=/home/vagrant/src/
+ExecStart=/home/vagrant/src/run_server
+Restart=always
+RestartSec=1
+User=vagrant
+
+[Install]
+WantedBy=multi-user.target

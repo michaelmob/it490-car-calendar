@@ -1,0 +1,37 @@
+{% extends 'cars/display.html' %}
+
+
+{% block inner_content %}
+<table class="table">
+  <thead>
+    <th>Description</th>
+    <th>Due Every X Miles</th>
+    <th>Due in X Miles</th>
+    <th>Due in X Days</th>
+    <th>Hours</th>
+    <th>Difficulty</th>
+    <th></th>
+  </thead>
+
+  <tbody>
+    {% for maint in data %}
+      {% if maint.due_in_miles > 0 %}
+      <tr>
+        <td>{{ maint.desc }}</td>
+        <td>{{ maint.due_mileage }} miles</td>
+        <td>{{ maint.due_in_miles }} miles</td>
+        <td>{{ maint.due_in_days }} days</td>
+        <td>{{ maint.repair.repair_hours }}</td>
+        <td>{{ maint.repair.repair_difficulty }}</td>
+        <td>
+          <form method="POST">
+            <input name="query" value="{{ maint.desc }}" type="hidden" />
+            <button class="btn btn-primary" type="submit">Find Video</button>
+          </form>
+        </td>
+      </tr>
+      {% endif %}
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,17 @@
+################################################################################
+
+Consumers are located at /home/vagrant/src/consume_*.py
+Test senders are located at /home/vagrant/src/example_senders/
+Car Calendar logs are located at /home/vagrant/logs
+
+Send a 'Hello World' log:
+-------------------------
+python3 /home/vagrant/src/example_senders/log_sender.py
+
+Check status of consumers:
+-------------
+systemctl status log-consumer.service
+systemctl status auth-consumer.service
+systemctl status data-consumer.service
+
+################################################################################

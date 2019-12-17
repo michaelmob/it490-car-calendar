@@ -1,0 +1,13 @@
+[Unit]
+Description=Car Calendar Log Consumer
+After=mysql.service
+
+[Service]
+WorkingDirectory=/home/vagrant/src/
+ExecStart=/usr/bin/python3 /home/vagrant/src/consume_log.py
+Restart=always
+RestartSec=1
+User=vagrant
+
+[Install]
+WantedBy=multi-user.target

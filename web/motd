@@ -1,0 +1,11 @@
+################################################################################
+Run development server:
+-------------
+sudo systemctl stop flask.service
+/home/vagrant/src/run_server
+
+Check status of flask:
+-------------
+systemctl status flask.service
+
+################################################################################
