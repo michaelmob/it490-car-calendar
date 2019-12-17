@@ -54,5 +54,5 @@ doc/
 test/vagrant-spec/boxes/*.box
 
 # Environment
-.env
-.env*
+#.env
+#.env*
